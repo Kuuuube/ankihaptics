@@ -11,10 +11,9 @@ ease_to_button = {
 def answer_button_press(mw, reviewer, card, ease):
     config = config_util.get_config(mw)
     for device in config["devices"]:
-        if device[ease_to_button[ease]]["enabled"]:
-            print(ease, ease_to_button[ease], "activating device")
-    print(config)
-    print(ease)
+        button_name = ease_to_button[ease]
+        if device[button_name]["enabled"]:
+            print("Activating device. Strength: " + str(device[button_name]["strength"]) + ", Duration: " + str(device[button_name]["duration"]) + "s")
 
 def register_hooks(mw):
     gui_hooks.reviewer_did_answer_card.append(lambda reviewer, card, ease: answer_button_press(mw, reviewer, card, ease))

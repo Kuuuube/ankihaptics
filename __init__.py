@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import os
+# add lib folder to path to allow accessing modules there
+sys.path.append(os.path.dirname(__file__) + "/lib")
 
 if __name__ != "__main__" and "pytest" not in sys.modules:
     from aqt import mw

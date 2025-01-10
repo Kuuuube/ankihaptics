@@ -53,24 +53,21 @@ class AnkiPlug:
         self.setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, default_device_name))
 
         #Bottom Buttons
+        def set_config_attributes(config, device_index):
+            config.devices[device_index]["enabled_by_default"] = mw.findChild(QCheckBox, "ankiplug_device_enabled").isChecked()
+            return config
+
         bottom_buttons_horizontal_layout = QHBoxLayout()
         vertical_layout.addLayout(bottom_buttons_horizontal_layout)
-        generate_button = QPushButton("Save", clicked = settings_window.accept)
+        generate_button = QPushButton("Save", clicked = lambda _: set_config_attributes(config, get_device_index(config, devices_combobox.currentText())))
         bottom_buttons_horizontal_layout.addWidget(generate_button)
         close_button = QPushButton("Close", clicked = settings_window.reject)
         bottom_buttons_horizontal_layout.addWidget(close_button)
 
-        def set_config_attributes(config):
-            return config
-
         settings_window.setLayout(vertical_layout)
         settings_window.resize(500, 400)
         if settings_window.exec():
-            mw.progress.start(immediate = True)
-            config = set_config_attributes(config)
-            mw.progress.finish()
-            self.win.show()
-
+            settings_window.show()
 
 
     def setup_vertical_layout_tabs(self, config, tabs_frame, device_index):
@@ -86,6 +83,7 @@ class AnkiPlug:
         tabs_frame.addTab(general_tab_scroll_area, "General")
 
         device_enabled = QCheckBox("Device Enabled")
+        device_enabled.setObjectName("ankiplug_device_enabled")
         device_enabled.setChecked(config.devices[device_index]["enabled_by_default"])
         general_tab_vertical_layout.addWidget(device_enabled)
 

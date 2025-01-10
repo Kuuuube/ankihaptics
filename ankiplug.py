@@ -30,150 +30,15 @@ class AnkiPlug:
         devices_combobox.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         deck_horizontal_layout.addWidget(QLabel("Device: "))
         devices_combobox.setCurrentText("*")
+        # devices_combobox.currentTextChanged.connect(update_fields_dropdown)
 
         deck_horizontal_layout.addWidget(devices_combobox)
         vertical_layout.addLayout(deck_horizontal_layout)
 
-        self.setup_vertical_layout_tabs(config, settings_window, vertical_layout)
-
-    def setup_vertical_layout_tabs(self, config, settings_window, vertical_layout):
         tabs_frame = QTabWidget()
         vertical_layout.addWidget(tabs_frame)
 
-        #General Tab
-        general_tab = QWidget()
-        general_tab_scroll_area = QScrollArea()
-        general_tab_scroll_area.setWidgetResizable(True)
-        general_tab_vertical_layout = QVBoxLayout()
-        general_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-
-        general_tab.setLayout(general_tab_vertical_layout)
-        general_tab_scroll_area.setWidget(general_tab)
-        tabs_frame.addTab(general_tab_scroll_area, "General")
-
-        device_enabled = QCheckBox("Device Enabled")
-        # device_enabled.setChecked(config.enabled)
-        general_tab_vertical_layout.addWidget(device_enabled)
-
-
-        #Answer Buttons Tab
-        answer_buttons_tab = QWidget()
-        answer_buttons_tab_scroll_area = QScrollArea()
-        answer_buttons_tab_scroll_area.setWidgetResizable(True)
-        answer_buttons_tab_vertical_layout = QVBoxLayout()
-        answer_buttons_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-
-        answer_buttons_tab.setLayout(answer_buttons_tab_vertical_layout)
-        answer_buttons_tab_scroll_area.setWidget(answer_buttons_tab)
-        tabs_frame.addTab(answer_buttons_tab_scroll_area, "Answer Buttons")
-
-        #Again Button Settings
-        again_button_box = QGroupBox("Again Button")
-        again_button_box.setCheckable(True)
-        # again_button_box.setChecked(config.devices[device]["again"]["enabled"])
-        again_button_box_layout = QVBoxLayout()
-
-        again_button_strength_box = QHBoxLayout()
-        again_button_strength_box.addWidget(QLabel("Strength"))
-        again_button_strength = QSlider(Qt.Orientation.Horizontal)
-        # again_button_strength.setValue(config.devices[device]["again"]["strength"] * 100)
-        again_button_strength.setMaximum(100)
-        again_button_strength_box.addWidget(again_button_strength)
-        again_button_box_layout.addLayout(again_button_strength_box)
-
-        again_button_duration_box = QHBoxLayout()
-        again_button_duration_box.addWidget(QLabel("Duration"))
-        again_button_duration = QLineEdit()
-        # again_button_duration.setText(config.devices[device]["again"]["duration"])
-        again_button_duration_box.addWidget(again_button_duration)
-        again_button_box_layout.addLayout(again_button_duration_box)
-
-        again_button_box.setLayout(again_button_box_layout)
-        answer_buttons_tab_vertical_layout.addWidget(again_button_box)
-
-        #Hard Button Settings
-        hard_button_box = QGroupBox("Hard Button")
-        hard_button_box.setCheckable(True)
-        # hard_button_box.setChecked(config.devices[device]["hard"]["enabled"])
-        hard_button_box_layout = QVBoxLayout()
-
-        hard_button_strength_box = QHBoxLayout()
-        hard_button_strength_box.addWidget(QLabel("Strength"))
-        hard_button_strength = QSlider(Qt.Orientation.Horizontal)
-        # hard_button_strength.setValue(config.devices[device]["hard"]["strength"] * 100)
-        hard_button_strength.setMaximum(100)
-        hard_button_strength_box.addWidget(hard_button_strength)
-        hard_button_box_layout.addLayout(hard_button_strength_box)
-
-        hard_button_duration_box = QHBoxLayout()
-        hard_button_duration_box.addWidget(QLabel("Duration"))
-        hard_button_duration = QLineEdit()
-        # hard_button_duration.setText(config.devices[device]["hard"]["duration"])
-        hard_button_duration_box.addWidget(hard_button_duration)
-        hard_button_box_layout.addLayout(hard_button_duration_box)
-
-        hard_button_box.setLayout(hard_button_box_layout)
-        answer_buttons_tab_vertical_layout.addWidget(hard_button_box)
-
-        #Good Button Settings
-        good_button_box = QGroupBox("Good Button")
-        good_button_box.setCheckable(True)
-        # good_button_box.setChecked(config.devices[device]["good"]["enabled"])
-        good_button_box_layout = QVBoxLayout()
-
-        good_button_strength_box = QHBoxLayout()
-        good_button_strength_box.addWidget(QLabel("Strength"))
-        good_button_strength = QSlider(Qt.Orientation.Horizontal)
-        # good_button_strength.setValue(config.devices[device]["good"]["strength"] * 100)
-        good_button_strength.setMaximum(100)
-        good_button_strength_box.addWidget(good_button_strength)
-        good_button_box_layout.addLayout(good_button_strength_box)
-
-        good_button_duration_box = QHBoxLayout()
-        good_button_duration_box.addWidget(QLabel("Duration"))
-        good_button_duration = QLineEdit()
-        # good_button_duration.setText(config.devices[device]["good"]["duration"])
-        good_button_duration_box.addWidget(good_button_duration)
-        good_button_box_layout.addLayout(good_button_duration_box)
-
-        good_button_box.setLayout(good_button_box_layout)
-        answer_buttons_tab_vertical_layout.addWidget(good_button_box)
-
-        #Easy Button Settings
-        easy_button_box = QGroupBox("Easy Button")
-        easy_button_box.setCheckable(True)
-        # easy_button_box.setChecked(config.devices[device]["easy"]["enabled"])
-        easy_button_box_layout = QVBoxLayout()
-
-        easy_button_strength_box = QHBoxLayout()
-        easy_button_strength_box.addWidget(QLabel("Strength"))
-        easy_button_strength = QSlider(Qt.Orientation.Horizontal)
-        # easy_button_strength.setValue(config.devices[device]["easy"]["strength"] * 100)
-        easy_button_strength.setMaximum(100)
-        easy_button_strength_box.addWidget(easy_button_strength)
-        easy_button_box_layout.addLayout(easy_button_strength_box)
-
-        easy_button_duration_box = QHBoxLayout()
-        easy_button_duration_box.addWidget(QLabel("Duration"))
-        easy_button_duration = QLineEdit()
-        # easy_button_duration.setText(config.devices[device]["easy"]["duration"])
-        easy_button_duration_box.addWidget(easy_button_duration)
-        easy_button_box_layout.addLayout(easy_button_duration_box)
-
-        easy_button_box.setLayout(easy_button_box_layout)
-        answer_buttons_tab_vertical_layout.addWidget(easy_button_box)
-
-
-        #Advanced Tab
-        advanced_tab = QWidget()
-        advanced_tab_scroll_area = QScrollArea()
-        advanced_tab_scroll_area.setWidgetResizable(True)
-        advanced_tab_vertical_layout = QVBoxLayout()
-        advanced_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-
-        advanced_tab.setLayout(advanced_tab_vertical_layout)
-        advanced_tab_scroll_area.setWidget(advanced_tab)
-        tabs_frame.addTab(advanced_tab_scroll_area, "Advanced")
+        self.setup_vertical_layout_tabs(config, tabs_frame, 0)
 
         #Bottom Buttons
         bottom_buttons_horizontal_layout = QHBoxLayout()
@@ -193,3 +58,140 @@ class AnkiPlug:
             config = set_config_attributes(config)
             mw.progress.finish()
             self.win.show()
+
+
+    def setup_vertical_layout_tabs(self, config, tabs_frame, device):
+        #General Tab
+        general_tab = QWidget()
+        general_tab_scroll_area = QScrollArea()
+        general_tab_scroll_area.setWidgetResizable(True)
+        general_tab_vertical_layout = QVBoxLayout()
+        general_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        general_tab.setLayout(general_tab_vertical_layout)
+        general_tab_scroll_area.setWidget(general_tab)
+        tabs_frame.addTab(general_tab_scroll_area, "General")
+
+        device_enabled = QCheckBox("Device Enabled")
+        device_enabled.setChecked(config.devices[device]["enabled_by_default"])
+        general_tab_vertical_layout.addWidget(device_enabled)
+
+
+        #Answer Buttons Tab
+        answer_buttons_tab = QWidget()
+        answer_buttons_tab_scroll_area = QScrollArea()
+        answer_buttons_tab_scroll_area.setWidgetResizable(True)
+        answer_buttons_tab_vertical_layout = QVBoxLayout()
+        answer_buttons_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        answer_buttons_tab.setLayout(answer_buttons_tab_vertical_layout)
+        answer_buttons_tab_scroll_area.setWidget(answer_buttons_tab)
+        tabs_frame.addTab(answer_buttons_tab_scroll_area, "Answer Buttons")
+
+        #Again Button Settings
+        again_button_box = QGroupBox("Again Button")
+        again_button_box.setCheckable(True)
+        again_button_box.setChecked(config.devices[device]["again"]["enabled"])
+        again_button_box_layout = QVBoxLayout()
+
+        again_button_strength_box = QHBoxLayout()
+        again_button_strength_box.addWidget(QLabel("Strength"))
+        again_button_strength = QSlider(Qt.Orientation.Horizontal)
+        again_button_strength.setValue(int(config.devices[device]["again"]["strength"] * 100))
+        again_button_strength.setMaximum(100)
+        again_button_strength_box.addWidget(again_button_strength)
+        again_button_box_layout.addLayout(again_button_strength_box)
+
+        again_button_duration_box = QHBoxLayout()
+        again_button_duration_box.addWidget(QLabel("Duration"))
+        again_button_duration = QLineEdit()
+        again_button_duration.setText(str(config.devices[device]["again"]["duration"]))
+        again_button_duration_box.addWidget(again_button_duration)
+        again_button_box_layout.addLayout(again_button_duration_box)
+
+        again_button_box.setLayout(again_button_box_layout)
+        answer_buttons_tab_vertical_layout.addWidget(again_button_box)
+
+        #Hard Button Settings
+        hard_button_box = QGroupBox("Hard Button")
+        hard_button_box.setCheckable(True)
+        hard_button_box.setChecked(config.devices[device]["hard"]["enabled"])
+        hard_button_box_layout = QVBoxLayout()
+
+        hard_button_strength_box = QHBoxLayout()
+        hard_button_strength_box.addWidget(QLabel("Strength"))
+        hard_button_strength = QSlider(Qt.Orientation.Horizontal)
+        hard_button_strength.setValue(int(config.devices[device]["hard"]["strength"] * 100))
+        hard_button_strength.setMaximum(100)
+        hard_button_strength_box.addWidget(hard_button_strength)
+        hard_button_box_layout.addLayout(hard_button_strength_box)
+
+        hard_button_duration_box = QHBoxLayout()
+        hard_button_duration_box.addWidget(QLabel("Duration"))
+        hard_button_duration = QLineEdit()
+        hard_button_duration.setText(str(config.devices[device]["hard"]["duration"]))
+        hard_button_duration_box.addWidget(hard_button_duration)
+        hard_button_box_layout.addLayout(hard_button_duration_box)
+
+        hard_button_box.setLayout(hard_button_box_layout)
+        answer_buttons_tab_vertical_layout.addWidget(hard_button_box)
+
+        #Good Button Settings
+        good_button_box = QGroupBox("Good Button")
+        good_button_box.setCheckable(True)
+        good_button_box.setChecked(config.devices[device]["good"]["enabled"])
+        good_button_box_layout = QVBoxLayout()
+
+        good_button_strength_box = QHBoxLayout()
+        good_button_strength_box.addWidget(QLabel("Strength"))
+        good_button_strength = QSlider(Qt.Orientation.Horizontal)
+        good_button_strength.setValue(int(config.devices[device]["good"]["strength"] * 100))
+        good_button_strength.setMaximum(100)
+        good_button_strength_box.addWidget(good_button_strength)
+        good_button_box_layout.addLayout(good_button_strength_box)
+
+        good_button_duration_box = QHBoxLayout()
+        good_button_duration_box.addWidget(QLabel("Duration"))
+        good_button_duration = QLineEdit()
+        good_button_duration.setText(str(config.devices[device]["good"]["duration"]))
+        good_button_duration_box.addWidget(good_button_duration)
+        good_button_box_layout.addLayout(good_button_duration_box)
+
+        good_button_box.setLayout(good_button_box_layout)
+        answer_buttons_tab_vertical_layout.addWidget(good_button_box)
+
+        #Easy Button Settings
+        easy_button_box = QGroupBox("Easy Button")
+        easy_button_box.setCheckable(True)
+        easy_button_box.setChecked(config.devices[device]["easy"]["enabled"])
+        easy_button_box_layout = QVBoxLayout()
+
+        easy_button_strength_box = QHBoxLayout()
+        easy_button_strength_box.addWidget(QLabel("Strength"))
+        easy_button_strength = QSlider(Qt.Orientation.Horizontal)
+        easy_button_strength.setValue(int(config.devices[device]["easy"]["strength"] * 100))
+        easy_button_strength.setMaximum(100)
+        easy_button_strength_box.addWidget(easy_button_strength)
+        easy_button_box_layout.addLayout(easy_button_strength_box)
+
+        easy_button_duration_box = QHBoxLayout()
+        easy_button_duration_box.addWidget(QLabel("Duration"))
+        easy_button_duration = QLineEdit()
+        easy_button_duration.setText(str(config.devices[device]["easy"]["duration"]))
+        easy_button_duration_box.addWidget(easy_button_duration)
+        easy_button_box_layout.addLayout(easy_button_duration_box)
+
+        easy_button_box.setLayout(easy_button_box_layout)
+        answer_buttons_tab_vertical_layout.addWidget(easy_button_box)
+
+
+        #Advanced Tab
+        advanced_tab = QWidget()
+        advanced_tab_scroll_area = QScrollArea()
+        advanced_tab_scroll_area.setWidgetResizable(True)
+        advanced_tab_vertical_layout = QVBoxLayout()
+        advanced_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        advanced_tab.setLayout(advanced_tab_vertical_layout)
+        advanced_tab_scroll_area.setWidget(advanced_tab)
+        tabs_frame.addTab(advanced_tab_scroll_area, "Advanced")

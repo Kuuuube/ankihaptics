@@ -33,14 +33,14 @@ device_schema = {
     },
     "good": {
         "default": {
-            "enabled": False,
+            "enabled": True,
             "strength": 0.5,
             "duration": 1
         },
     },
     "easy": {
         "default": {
-            "enabled": False,
+            "enabled": True,
             "strength": 1,
             "duration": 1
         },

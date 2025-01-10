@@ -156,6 +156,7 @@ class AnkiPlug:
         again_button_duration.setText(str(config.devices[device_index]["again"]["duration"]))
         again_button_duration.setObjectName("ankiplug_again_button_duration")
         again_button_duration_box.addWidget(again_button_duration)
+        again_button_duration_box.addWidget(QLabel("seconds"))
         again_button_box_layout.addLayout(again_button_duration_box)
 
         again_button_box.setLayout(again_button_box_layout)
@@ -182,6 +183,7 @@ class AnkiPlug:
         hard_button_duration.setText(str(config.devices[device_index]["hard"]["duration"]))
         hard_button_duration.setObjectName("ankiplug_hard_button_duration")
         hard_button_duration_box.addWidget(hard_button_duration)
+        hard_button_duration_box.addWidget(QLabel("seconds"))
         hard_button_box_layout.addLayout(hard_button_duration_box)
 
         hard_button_box.setLayout(hard_button_box_layout)
@@ -208,6 +210,7 @@ class AnkiPlug:
         good_button_duration.setText(str(config.devices[device_index]["good"]["duration"]))
         good_button_duration.setObjectName("ankiplug_good_button_duration")
         good_button_duration_box.addWidget(good_button_duration)
+        good_button_duration_box.addWidget(QLabel("seconds"))
         good_button_box_layout.addLayout(good_button_duration_box)
 
         good_button_box.setLayout(good_button_box_layout)
@@ -234,6 +237,7 @@ class AnkiPlug:
         easy_button_duration.setText(str(config.devices[device_index]["easy"]["duration"]))
         easy_button_duration.setObjectName("ankiplug_easy_button_duration")
         easy_button_duration_box.addWidget(easy_button_duration)
+        easy_button_duration_box.addWidget(QLabel("seconds"))
         easy_button_box_layout.addLayout(easy_button_duration_box)
 
         easy_button_box.setLayout(easy_button_box_layout)

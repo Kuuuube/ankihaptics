@@ -1,12 +1,43 @@
 import types
+import asyncio
+import logging
 
 from aqt import mw
 from aqt.qt import (Qt, QAction, QDialog, QVBoxLayout, QHBoxLayout,
                     QComboBox, QSizePolicy, QLabel, QTabWidget, QWidget,
                     QScrollArea, QPushButton, QCheckBox, QSlider, QLineEdit,
                     QGroupBox)
+from buttplug import Client, WebsocketConnector, ProtocolSpec
 
 from . import hooks, config_util, util
+
+async def get_devices():
+    client = Client("AnkiPlug Client", ProtocolSpec.v3)
+    connector = WebsocketConnector("ws://127.0.0.1:12345", logger = client.logger)
+
+    try:
+        await client.connect(connector)
+    except Exception as e:
+        logging.error(f"Could not connect to server, exiting: {e}")
+        return
+
+    await client.start_scanning()
+    await asyncio.sleep(10)
+    await client.stop_scanning()
+
+    client.logger.info(f"Devices: {client.devices}")
+
+    return client.devices
+
+    # for device in client.devices:
+    #     if len(device.actuators) != 0:
+    #         await device.actuators[0].command(0.5)
+    #     if len(device.linear_actuators) != 0:
+    #         await device.linear_actuators[0].command(1000, 0.5)
+    #     if len(device.rotatory_actuators) != 0:
+    #         await device.rotatory_actuators[0].command(0.5, True)
+
+    # await client.disconnect()
 
 class AnkiPlug:
     def __init__(self, mw):
@@ -15,7 +46,8 @@ class AnkiPlug:
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
 
-            hooks.register_hooks(mw)
+            devices = asyncio.run(get_devices())
+            hooks.register_hooks(mw, devices)
 
     def setup_settings_window(self):
         config = types.SimpleNamespace(**config_util.get_config(mw))

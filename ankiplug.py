@@ -54,7 +54,31 @@ class AnkiPlug:
 
         #Bottom Buttons
         def set_config_attributes(config, device_index):
-            config.devices[device_index]["enabled_by_default"] = mw.findChild(QCheckBox, "ankiplug_device_enabled").isChecked()
+            config.devices[device_index] = {
+                "device_name": config.devices[device_index]["device_name"],
+                "enabled_by_default": mw.findChild(QCheckBox, "ankiplug_device_enabled").isChecked(),
+                "enabled_pattern": mw.findChild(QLineEdit, "ankiplug_device_enabled_pattern").text(),
+                "again": {
+                    "enabled": mw.findChild(QGroupBox, "ankiplug_again_button_box").isChecked(),
+                    "strength": mw.findChild(QSlider, "ankiplug_again_button_strength").value() / 99,
+                    "duration": mw.findChild(QLineEdit, "ankiplug_again_button_duration").text(),
+                },
+                "hard": {
+                    "enabled": mw.findChild(QGroupBox, "ankiplug_hard_button_box").isChecked(),
+                    "strength": mw.findChild(QSlider, "ankiplug_hard_button_strength").value() / 99,
+                    "duration": mw.findChild(QLineEdit, "ankiplug_hard_button_duration").text(),
+                },
+                "good": {
+                    "enabled": mw.findChild(QGroupBox, "ankiplug_good_button_box").isChecked(),
+                    "strength": mw.findChild(QSlider, "ankiplug_good_button_strength").value() / 99,
+                    "duration": mw.findChild(QLineEdit, "ankiplug_good_button_duration").text(),
+                },
+                "easy": {
+                    "enabled": mw.findChild(QGroupBox, "ankiplug_easy_button_box").isChecked(),
+                    "strength": mw.findChild(QSlider, "ankiplug_easy_button_strength").value() / 99,
+                    "duration": mw.findChild(QLineEdit, "ankiplug_easy_button_duration").text(),
+                }
+            }
             return config
 
         bottom_buttons_horizontal_layout = QHBoxLayout()
@@ -87,6 +111,14 @@ class AnkiPlug:
         device_enabled.setChecked(config.devices[device_index]["enabled_by_default"])
         general_tab_vertical_layout.addWidget(device_enabled)
 
+        device_enabled_pattern_box = QHBoxLayout()
+        device_enabled_pattern_box.addWidget(QLabel("Enabled Pattern"))
+        device_enabled_pattern = QLineEdit()
+        device_enabled_pattern.setText(str(config.devices[device_index]["enabled_pattern"]))
+        device_enabled_pattern.setObjectName("ankiplug_device_enabled_pattern")
+        device_enabled_pattern_box.addWidget(device_enabled_pattern)
+        general_tab_vertical_layout.addLayout(device_enabled_pattern_box)
+
 
         #Answer Buttons Tab
         answer_buttons_tab = QWidget()
@@ -103,12 +135,14 @@ class AnkiPlug:
         again_button_box = QGroupBox("Again Button")
         again_button_box.setCheckable(True)
         again_button_box.setChecked(config.devices[device_index]["again"]["enabled"])
+        again_button_box.setObjectName("ankiplug_again_button_box")
         again_button_box_layout = QVBoxLayout()
 
         again_button_strength_box = QHBoxLayout()
         again_button_strength_box.addWidget(QLabel("Strength"))
         again_button_strength = QSlider(Qt.Orientation.Horizontal)
         again_button_strength.setValue(int(config.devices[device_index]["again"]["strength"] * 100))
+        again_button_strength.setObjectName("ankiplug_again_button_strength")
         again_button_strength_box.addWidget(again_button_strength)
         again_button_box_layout.addLayout(again_button_strength_box)
 
@@ -116,6 +150,7 @@ class AnkiPlug:
         again_button_duration_box.addWidget(QLabel("Duration"))
         again_button_duration = QLineEdit()
         again_button_duration.setText(str(config.devices[device_index]["again"]["duration"]))
+        again_button_duration.setObjectName("ankiplug_again_button_duration")
         again_button_duration_box.addWidget(again_button_duration)
         again_button_box_layout.addLayout(again_button_duration_box)
 
@@ -126,12 +161,14 @@ class AnkiPlug:
         hard_button_box = QGroupBox("Hard Button")
         hard_button_box.setCheckable(True)
         hard_button_box.setChecked(config.devices[device_index]["hard"]["enabled"])
+        hard_button_box.setObjectName("ankiplug_hard_button_box")
         hard_button_box_layout = QVBoxLayout()
 
         hard_button_strength_box = QHBoxLayout()
         hard_button_strength_box.addWidget(QLabel("Strength"))
         hard_button_strength = QSlider(Qt.Orientation.Horizontal)
         hard_button_strength.setValue(int(config.devices[device_index]["hard"]["strength"] * 100))
+        hard_button_strength.setObjectName("ankiplug_hard_button_strength")
         hard_button_strength_box.addWidget(hard_button_strength)
         hard_button_box_layout.addLayout(hard_button_strength_box)
 
@@ -139,6 +176,7 @@ class AnkiPlug:
         hard_button_duration_box.addWidget(QLabel("Duration"))
         hard_button_duration = QLineEdit()
         hard_button_duration.setText(str(config.devices[device_index]["hard"]["duration"]))
+        hard_button_duration.setObjectName("ankiplug_hard_button_duration")
         hard_button_duration_box.addWidget(hard_button_duration)
         hard_button_box_layout.addLayout(hard_button_duration_box)
 
@@ -149,12 +187,14 @@ class AnkiPlug:
         good_button_box = QGroupBox("Good Button")
         good_button_box.setCheckable(True)
         good_button_box.setChecked(config.devices[device_index]["good"]["enabled"])
+        good_button_box.setObjectName("ankiplug_good_button_box")
         good_button_box_layout = QVBoxLayout()
 
         good_button_strength_box = QHBoxLayout()
         good_button_strength_box.addWidget(QLabel("Strength"))
         good_button_strength = QSlider(Qt.Orientation.Horizontal)
         good_button_strength.setValue(int(config.devices[device_index]["good"]["strength"] * 100))
+        good_button_strength.setObjectName("ankiplug_good_button_strength")
         good_button_strength_box.addWidget(good_button_strength)
         good_button_box_layout.addLayout(good_button_strength_box)
 
@@ -162,6 +202,7 @@ class AnkiPlug:
         good_button_duration_box.addWidget(QLabel("Duration"))
         good_button_duration = QLineEdit()
         good_button_duration.setText(str(config.devices[device_index]["good"]["duration"]))
+        good_button_duration.setObjectName("ankiplug_good_button_duration")
         good_button_duration_box.addWidget(good_button_duration)
         good_button_box_layout.addLayout(good_button_duration_box)
 
@@ -172,12 +213,14 @@ class AnkiPlug:
         easy_button_box = QGroupBox("Easy Button")
         easy_button_box.setCheckable(True)
         easy_button_box.setChecked(config.devices[device_index]["easy"]["enabled"])
+        easy_button_box.setObjectName("ankiplug_easy_button_box")
         easy_button_box_layout = QVBoxLayout()
 
         easy_button_strength_box = QHBoxLayout()
         easy_button_strength_box.addWidget(QLabel("Strength"))
         easy_button_strength = QSlider(Qt.Orientation.Horizontal)
         easy_button_strength.setValue(int(config.devices[device_index]["easy"]["strength"] * 100))
+        easy_button_strength.setObjectName("ankiplug_easy_button_strength")
         easy_button_strength_box.addWidget(easy_button_strength)
         easy_button_box_layout.addLayout(easy_button_strength_box)
 
@@ -185,6 +228,7 @@ class AnkiPlug:
         easy_button_duration_box.addWidget(QLabel("Duration"))
         easy_button_duration = QLineEdit()
         easy_button_duration.setText(str(config.devices[device_index]["easy"]["duration"]))
+        easy_button_duration.setObjectName("ankiplug_easy_button_duration")
         easy_button_duration_box.addWidget(easy_button_duration)
         easy_button_box_layout.addLayout(easy_button_duration_box)
 

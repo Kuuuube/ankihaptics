@@ -7,8 +7,10 @@ config_schema = {
     }
 }
 
-devices_schema = {
-    "device_name": "",
+device_schema = {
+    "device_name": {
+        "default": ""
+    },
     "enabled_by_default": {
         "default": False,
     },
@@ -65,16 +67,36 @@ def reset_config(mw):
     default_config = dict(map(lambda item: (item[0], item[1]["default"]), config_schema.items()))
     mw.addonManager.writeConfig(__name__, default_config)
 
-def validate_config(config):
-    for config_schema_key in config_schema.keys():
-        if config_schema_key in config.keys():
-            if type(config_schema[config_schema_key]["default"]) is type(config[config_schema_key]):
-                if "enum" in config_schema[config_schema_key]:
-                    if config[config_schema_key] in config_schema[config_schema_key]["enum"]:
+def dict_validator(target_dict, schema):
+    new_dict = target_dict
+
+    if type(target_dict) is not dict:
+        new_dict = {}
+        for schema_key in schema.keys():
+            new_dict[schema_key] = schema[schema_key]["default"]
+        return new_dict
+
+    for schema_key in schema.keys():
+        if schema_key in target_dict.keys():
+            if type(schema[schema_key]["default"]) is type(target_dict[schema_key]):
+                if type(target_dict[schema_key]) is dict:
+                    new_dict[schema_key] = dict_validator(target_dict[schema_key])
+                    continue
+                if "enum" in schema[schema_key]:
+                    if target_dict[schema_key] in config_schema[schema_key]["enum"]:
                         continue
                 else:
                     continue
-        config[config_schema_key] = config_schema[config_schema_key]["default"]
+        new_dict[schema_key] = schema[schema_key]["default"]
+
+    return new_dict
+
+def validate_config(config):
+    config = dict_validator(config, config_schema)
+    i = 0
+    while i < len(config["devices"]):
+        config["devices"][i] = dict_validator(config["devices"][i], device_schema)
+        i += 1
     return config
 
 def migrate_config(config):

@@ -1,1 +1,1 @@
-cp -r *.py ~/.local/share/Anki2/addons21/ankiplug/
+cp *.py *.json README.md LICENSE ~/.local/share/Anki2/addons21/ankiplug/

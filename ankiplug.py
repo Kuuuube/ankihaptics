@@ -39,7 +39,9 @@ class AnkiPlug:
             return 0
         def update_vertical_layout_tabs(device_name):
             current_tab = tabs_frame.currentIndex()
-            tabs_frame.clear()
+            tab_count = tabs_frame.count()
+            for tab_index in reversed(range(tab_count)):
+                tabs_frame.widget(tab_index).deleteLater()
             self.setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, device_name))
             tabs_frame.setCurrentIndex(current_tab)
         devices_combobox.currentTextChanged.connect(update_vertical_layout_tabs)

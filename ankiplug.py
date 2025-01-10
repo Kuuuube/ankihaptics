@@ -60,22 +60,22 @@ class AnkiPlug:
                 "enabled_pattern": mw.findChild(QLineEdit, "ankiplug_device_enabled_pattern").text(),
                 "again": {
                     "enabled": mw.findChild(QGroupBox, "ankiplug_again_button_box").isChecked(),
-                    "strength": mw.findChild(QSlider, "ankiplug_again_button_strength").value() / 99,
+                    "strength": round(mw.findChild(QSlider, "ankiplug_again_button_strength").value() / 99, 2),
                     "duration": mw.findChild(QLineEdit, "ankiplug_again_button_duration").text(),
                 },
                 "hard": {
                     "enabled": mw.findChild(QGroupBox, "ankiplug_hard_button_box").isChecked(),
-                    "strength": mw.findChild(QSlider, "ankiplug_hard_button_strength").value() / 99,
+                    "strength": round(mw.findChild(QSlider, "ankiplug_hard_button_strength").value() / 99, 2),
                     "duration": mw.findChild(QLineEdit, "ankiplug_hard_button_duration").text(),
                 },
                 "good": {
                     "enabled": mw.findChild(QGroupBox, "ankiplug_good_button_box").isChecked(),
-                    "strength": mw.findChild(QSlider, "ankiplug_good_button_strength").value() / 99,
+                    "strength": round(mw.findChild(QSlider, "ankiplug_good_button_strength").value() / 99, 2),
                     "duration": mw.findChild(QLineEdit, "ankiplug_good_button_duration").text(),
                 },
                 "easy": {
                     "enabled": mw.findChild(QGroupBox, "ankiplug_easy_button_box").isChecked(),
-                    "strength": mw.findChild(QSlider, "ankiplug_easy_button_strength").value() / 99,
+                    "strength": round(mw.findChild(QSlider, "ankiplug_easy_button_strength").value() / 99, 2),
                     "duration": mw.findChild(QLineEdit, "ankiplug_easy_button_duration").text(),
                 }
             }

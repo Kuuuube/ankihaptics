@@ -32,10 +32,15 @@ class AnkiPlug:
         devices_combobox.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         deck_horizontal_layout.addWidget(QLabel("Device: "))
         devices_combobox.setCurrentText(default_device_name)
+        def get_device_index(config, device_name):
+            for i, device in enumerate(config.devices):
+                if device["device_name"] == device_name:
+                    return i
+            return 0
         def update_vertical_layout_tabs(device_name):
             current_tab = tabs_frame.currentIndex()
             tabs_frame.clear()
-            self.setup_vertical_layout_tabs(config, tabs_frame, device_name)
+            self.setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, device_name))
             tabs_frame.setCurrentIndex(current_tab)
         devices_combobox.currentTextChanged.connect(update_vertical_layout_tabs)
 
@@ -45,7 +50,7 @@ class AnkiPlug:
         tabs_frame = QTabWidget()
         vertical_layout.addWidget(tabs_frame)
 
-        self.setup_vertical_layout_tabs(config, tabs_frame, default_device_name)
+        self.setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, default_device_name))
 
         #Bottom Buttons
         bottom_buttons_horizontal_layout = QHBoxLayout()
@@ -67,12 +72,8 @@ class AnkiPlug:
             self.win.show()
 
 
-    def setup_vertical_layout_tabs(self, config, tabs_frame, device_name):
-        device_index = 0
-        for i, device in enumerate(config.devices):
-            if device["device_name"] == device_name:
-                device_index = i
 
+    def setup_vertical_layout_tabs(self, config, tabs_frame, device_index):
         #General Tab
         general_tab = QWidget()
         general_tab_scroll_area = QScrollArea()

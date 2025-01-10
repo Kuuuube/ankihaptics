@@ -1,0 +1,1 @@
+cp -r *.py ~/.local/share/Anki2/addons21/ankiplug/

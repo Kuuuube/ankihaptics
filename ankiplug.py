@@ -6,7 +6,7 @@ from aqt.qt import (Qt, QAction, QDialog, QVBoxLayout, QHBoxLayout,
                     QScrollArea, QPushButton, QCheckBox, QSlider, QLineEdit,
                     QGroupBox)
 
-from . import hooks, config_util
+from . import hooks, config_util, util
 
 class AnkiPlug:
     def __init__(self, mw):
@@ -63,22 +63,22 @@ class AnkiPlug:
                 "again": {
                     "enabled": mw.findChild(QGroupBox, "ankiplug_again_button_box").isChecked(),
                     "strength": round(mw.findChild(QSlider, "ankiplug_again_button_strength").value() / 99, 2),
-                    "duration": mw.findChild(QLineEdit, "ankiplug_again_button_duration").text(),
+                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankiplug_again_button_duration").text()),
                 },
                 "hard": {
                     "enabled": mw.findChild(QGroupBox, "ankiplug_hard_button_box").isChecked(),
                     "strength": round(mw.findChild(QSlider, "ankiplug_hard_button_strength").value() / 99, 2),
-                    "duration": mw.findChild(QLineEdit, "ankiplug_hard_button_duration").text(),
+                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankiplug_hard_button_duration").text()),
                 },
                 "good": {
                     "enabled": mw.findChild(QGroupBox, "ankiplug_good_button_box").isChecked(),
                     "strength": round(mw.findChild(QSlider, "ankiplug_good_button_strength").value() / 99, 2),
-                    "duration": mw.findChild(QLineEdit, "ankiplug_good_button_duration").text(),
+                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankiplug_good_button_duration").text()),
                 },
                 "easy": {
                     "enabled": mw.findChild(QGroupBox, "ankiplug_easy_button_box").isChecked(),
                     "strength": round(mw.findChild(QSlider, "ankiplug_easy_button_strength").value() / 99, 2),
-                    "duration": mw.findChild(QLineEdit, "ankiplug_easy_button_duration").text(),
+                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankiplug_easy_button_duration").text()),
                 }
             }
             if write_to_anki:

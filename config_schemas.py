@@ -15,7 +15,7 @@ again_button_schema = {
         "default": 0.1
     },
     "duration": {
-        "default": 1
+        "default": 1.0
     }
 }
 
@@ -27,7 +27,7 @@ hard_button_schema = {
         "default": 0.25
     },
     "duration": {
-        "default": 1
+        "default": 1.0
     }
 }
 
@@ -39,7 +39,7 @@ good_button_schema = {
         "default": 0.5
     },
     "duration": {
-        "default": 1
+        "default": 1.0
     }
 }
 
@@ -48,10 +48,10 @@ easy_button_schema = {
         "default": True
     },
     "strength": {
-        "default": 1
+        "default": 1.0
     },
     "duration": {
-        "default": 1
+        "default": 1.0
     }
 }
 

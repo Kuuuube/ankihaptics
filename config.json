@@ -1,4 +1,30 @@
 {
     "version": 1,
-    "devices": []
+    "devices": [
+        {
+            "device_name": "*",
+            "enabled_by_default": false,
+            "enabled_pattern": "*",
+            "again": {
+                "enabled": false,
+                "strength": 0.1,
+                "duration": 1
+            },
+            "hard": {
+                "enabled": false,
+                "strength": 0.25,
+                "duration": 1
+            },
+            "good": {
+                "enabled": true,
+                "strength": 0.5,
+                "duration": 1
+            },
+            "easy": {
+                "enabled": true,
+                "strength": 1,
+                "duration": 1
+            }
+        }
+    ]
 }

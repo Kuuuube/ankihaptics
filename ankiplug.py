@@ -53,7 +53,7 @@ class AnkiPlug:
         self.setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, default_device_name))
 
         #Bottom Buttons
-        def set_config_attributes(config, device_index):
+        def set_config_attributes(config, device_index, write_to_anki = False):
             config.devices[device_index] = {
                 "device_name": config.devices[device_index]["device_name"],
                 "enabled_by_default": mw.findChild(QCheckBox, "ankiplug_device_enabled").isChecked(),
@@ -79,11 +79,13 @@ class AnkiPlug:
                     "duration": mw.findChild(QLineEdit, "ankiplug_easy_button_duration").text(),
                 }
             }
+            if write_to_anki:
+                config_util.set_config(mw, config)
             return config
 
         bottom_buttons_horizontal_layout = QHBoxLayout()
         vertical_layout.addLayout(bottom_buttons_horizontal_layout)
-        generate_button = QPushButton("Save", clicked = lambda _: set_config_attributes(config, get_device_index(config, devices_combobox.currentText())))
+        generate_button = QPushButton("Save", clicked = lambda _: set_config_attributes(config, get_device_index(config, devices_combobox.currentText()), write_to_anki = True))
         bottom_buttons_horizontal_layout.addWidget(generate_button)
         close_button = QPushButton("Close", clicked = settings_window.reject)
         bottom_buttons_horizontal_layout.addWidget(close_button)

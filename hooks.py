@@ -1,8 +1,18 @@
 from aqt import gui_hooks
 from . import config_util
 
+ease_to_button = {
+    1: "again",
+    2: "hard",
+    3: "good",
+    4: "easy"
+}
+
 def answer_button_press(mw, reviewer, card, ease):
     config = config_util.get_config(mw)
+    for device in config["devices"]:
+        if device[ease_to_button[ease]]["enabled"]:
+            print(ease, ease_to_button[ease], "activating device")
     print(config)
     print(ease)
 

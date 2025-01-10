@@ -26,11 +26,11 @@ class AnkiPlug:
         default_device_name = "*"
 
         #Above Tabs
-        deck_horizontal_layout = QHBoxLayout()
+        devices_horizontal_layout = QHBoxLayout()
         devices_combobox = QComboBox()
         devices_combobox.addItems([*((x["device_name"]) for x in config.devices)])
         devices_combobox.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        deck_horizontal_layout.addWidget(QLabel("Device: "))
+        devices_horizontal_layout.addWidget(QLabel("Device: "))
         devices_combobox.setCurrentText(default_device_name)
         def get_device_index(config, device_name):
             for i, device in enumerate(config.devices):
@@ -44,8 +44,8 @@ class AnkiPlug:
             tabs_frame.setCurrentIndex(current_tab)
         devices_combobox.currentTextChanged.connect(update_vertical_layout_tabs)
 
-        deck_horizontal_layout.addWidget(devices_combobox)
-        vertical_layout.addLayout(deck_horizontal_layout)
+        devices_horizontal_layout.addWidget(devices_combobox)
+        vertical_layout.addLayout(devices_horizontal_layout)
 
         tabs_frame = QTabWidget()
         vertical_layout.addWidget(tabs_frame)

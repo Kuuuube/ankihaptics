@@ -110,7 +110,6 @@ class AnkiPlug:
         again_button_strength_box.addWidget(QLabel("Strength"))
         again_button_strength = QSlider(Qt.Orientation.Horizontal)
         again_button_strength.setValue(int(config.devices[device_index]["again"]["strength"] * 100))
-        again_button_strength.setMaximum(100)
         again_button_strength_box.addWidget(again_button_strength)
         again_button_box_layout.addLayout(again_button_strength_box)
 
@@ -134,7 +133,6 @@ class AnkiPlug:
         hard_button_strength_box.addWidget(QLabel("Strength"))
         hard_button_strength = QSlider(Qt.Orientation.Horizontal)
         hard_button_strength.setValue(int(config.devices[device_index]["hard"]["strength"] * 100))
-        hard_button_strength.setMaximum(100)
         hard_button_strength_box.addWidget(hard_button_strength)
         hard_button_box_layout.addLayout(hard_button_strength_box)
 
@@ -158,7 +156,6 @@ class AnkiPlug:
         good_button_strength_box.addWidget(QLabel("Strength"))
         good_button_strength = QSlider(Qt.Orientation.Horizontal)
         good_button_strength.setValue(int(config.devices[device_index]["good"]["strength"] * 100))
-        good_button_strength.setMaximum(100)
         good_button_strength_box.addWidget(good_button_strength)
         good_button_box_layout.addLayout(good_button_strength_box)
 
@@ -182,7 +179,6 @@ class AnkiPlug:
         easy_button_strength_box.addWidget(QLabel("Strength"))
         easy_button_strength = QSlider(Qt.Orientation.Horizontal)
         easy_button_strength.setValue(int(config.devices[device_index]["easy"]["strength"] * 100))
-        easy_button_strength.setMaximum(100)
         easy_button_strength_box.addWidget(easy_button_strength)
         easy_button_box_layout.addLayout(easy_button_strength_box)
 

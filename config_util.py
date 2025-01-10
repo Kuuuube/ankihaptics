@@ -1,6 +1,47 @@
 config_schema = {
     "version": {
         "default": 1,
+    },
+    "devices": {
+        "default": [],
+    }
+}
+
+devices_schema = {
+    "device_name": "",
+    "enabled_by_default": {
+        "default": False,
+    },
+    "enabled_pattern": {
+        "default": "*",
+    },
+    "again": {
+        "default": {
+            "enabled": False,
+            "strength": 0.1,
+            "duration": 1
+        },
+    },
+    "hard": {
+        "default": {
+            "enabled": False,
+            "strength": 0.25,
+            "duration": 1
+        },
+    },
+    "good": {
+        "default": {
+            "enabled": False,
+            "strength": 0.5,
+            "duration": 1
+        },
+    },
+    "easy": {
+        "default": {
+            "enabled": False,
+            "strength": 1,
+            "duration": 1
+        },
     }
 }
 

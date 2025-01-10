@@ -1,11 +1,15 @@
-from aqt import mw, gui_hooks
+from aqt.qt import QAction
 
-from . import config_util
+from . import hooks
 
-def answer_button_press(reviewer, card, ease):
-    config = config_util.get_config(mw)
-    print(config)
-    print(ease)
+class AnkiPlug:
+    def __init__(self, mw):
+        if mw:
+            self.menuAction = QAction("AnkiPlug Settings", mw, triggered = self.setup_options_window)
+            mw.form.menuTools.addSeparator()
+            mw.form.menuTools.addAction(self.menuAction)
 
-def register_hooks():
-    gui_hooks.reviewer_did_answer_card.append(answer_button_press)
+            hooks.register_hooks(mw)
+
+    def setup_options_window(self):
+        pass

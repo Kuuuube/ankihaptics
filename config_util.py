@@ -1,51 +1,4 @@
-config_schema = {
-    "version": {
-        "default": 1,
-    },
-    "devices": {
-        "default": [],
-    }
-}
-
-device_schema = {
-    "device_name": {
-        "default": ""
-    },
-    "enabled_by_default": {
-        "default": False,
-    },
-    "enabled_pattern": {
-        "default": "*",
-    },
-    "again": {
-        "default": {
-            "enabled": False,
-            "strength": 0.1,
-            "duration": 1
-        },
-    },
-    "hard": {
-        "default": {
-            "enabled": False,
-            "strength": 0.25,
-            "duration": 1
-        },
-    },
-    "good": {
-        "default": {
-            "enabled": True,
-            "strength": 0.5,
-            "duration": 1
-        },
-    },
-    "easy": {
-        "default": {
-            "enabled": True,
-            "strength": 1,
-            "duration": 1
-        },
-    }
-}
+from .config_schemas import config_schema, device_schema
 
 def set_config(mw, namespace_config):
     config = dict(namespace_config.__dict__)
@@ -80,7 +33,7 @@ def dict_validator(target_dict, schema):
         if schema_key in target_dict.keys():
             if type(schema[schema_key]["default"]) is type(target_dict[schema_key]):
                 if type(target_dict[schema_key]) is dict:
-                    new_dict[schema_key] = dict_validator(target_dict[schema_key])
+                    new_dict[schema_key] = dict_validator(target_dict[schema_key], schema[schema_key]["default"])
                     continue
                 if "enum" in schema[schema_key]:
                     if target_dict[schema_key] in config_schema[schema_key]["enum"]:

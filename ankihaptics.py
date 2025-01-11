@@ -15,7 +15,7 @@ from . import hooks, config_util, util
 class AnkiHaptics:
     def __init__(self, mw):
         if mw:
-            self.menuAction = QAction("Anki Haptics", mw, triggered = self.setup_settings_window)
+            self.menuAction = QAction("Anki Haptics Settings", mw, triggered = self.setup_settings_window)
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
 

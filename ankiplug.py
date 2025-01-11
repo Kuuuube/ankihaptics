@@ -1,8 +1,9 @@
 import types
 import asyncio
 import logging
+import threading
 
-from aqt import mw
+from aqt import mw, gui_hooks
 from aqt.qt import (Qt, QAction, QDialog, QVBoxLayout, QHBoxLayout,
                     QComboBox, QSizePolicy, QLabel, QTabWidget, QWidget,
                     QScrollArea, QPushButton, QCheckBox, QSlider, QLineEdit,
@@ -11,34 +12,6 @@ from buttplug import Client, WebsocketConnector, ProtocolSpec
 
 from . import hooks, config_util, util
 
-async def get_devices():
-    client = Client("AnkiPlug Client", ProtocolSpec.v3)
-    connector = WebsocketConnector("ws://127.0.0.1:12345", logger = client.logger)
-
-    try:
-        await client.connect(connector)
-    except Exception as e:
-        logging.error(f"Could not connect to server, exiting: {e}")
-        return
-
-    await client.start_scanning()
-    await asyncio.sleep(10)
-    await client.stop_scanning()
-
-    client.logger.info(f"Devices: {client.devices}")
-
-    return client.devices
-
-    # for device in client.devices:
-    #     if len(device.actuators) != 0:
-    #         await device.actuators[0].command(0.5)
-    #     if len(device.linear_actuators) != 0:
-    #         await device.linear_actuators[0].command(1000, 0.5)
-    #     if len(device.rotatory_actuators) != 0:
-    #         await device.rotatory_actuators[0].command(0.5, True)
-
-    # await client.disconnect()
-
 class AnkiPlug:
     def __init__(self, mw):
         if mw:
@@ -46,8 +19,37 @@ class AnkiPlug:
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
 
-            devices = asyncio.run(get_devices())
-            hooks.register_hooks(mw, devices)
+            threading.Thread(target = lambda: util.start_async(self.get_devices)).start()
+
+            #Prevent Anki from hanging forever due to infinitely running thread
+            self.keep_thread_alive = True
+            gui_hooks.profile_will_close.append(self.cleanup)
+
+    def cleanup(self):
+        self.keep_thread_alive = False
+
+    async def get_devices(self):
+        self.client = Client("AnkiPlug Client", ProtocolSpec.v3)
+        connector = WebsocketConnector("ws://127.0.0.1:12345", logger = self.client.logger)
+
+        try:
+            await self.client.connect(connector)
+        except Exception as e:
+            logging.error(f"Could not connect to server, exiting: {e}")
+            return
+
+        await self.client.start_scanning()
+        await asyncio.sleep(5)
+        await self.client.stop_scanning()
+
+        self.client.logger.info(f"Devices: {self.client.devices}")
+
+        hooks.register_hooks(mw, self.client)
+
+        while self.keep_thread_alive:
+            await asyncio.sleep(1)
+
+        await self.client.disconnect()
 
     def setup_settings_window(self):
         config = types.SimpleNamespace(**config_util.get_config(mw))

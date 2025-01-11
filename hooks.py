@@ -25,6 +25,7 @@ def show_answer(mw, client, card):
     handle_hooks(mw, client, "show_answer")
 
 def register_hooks(mw, client):
+    # https://github.com/ankitects/anki/blob/main/qt/tools/genhooks_gui.py
     gui_hooks.reviewer_did_answer_card.append(lambda reviewer, card, ease: answer_button_press(mw, client, reviewer, card, ease))
     gui_hooks.reviewer_did_show_question.append(lambda card: show_question(mw, client, card))
     gui_hooks.reviewer_did_show_answer.append(lambda card: show_answer(mw, client, card))

@@ -19,6 +19,7 @@ class AnkiHaptics:
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
 
+            self.client = None
             threading.Thread(target = lambda: util.start_async(self.get_devices)).start()
 
             #Prevent Anki from hanging forever due to infinitely running thread

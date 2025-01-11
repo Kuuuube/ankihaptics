@@ -1,6 +1,6 @@
 config_schema = {
     "version": {
-        "default": 1,
+        "default": 1
     },
     "websocket_path": {
         "default": "ws://127.0.0.1:12345"
@@ -63,21 +63,21 @@ device_schema = {
         "default": ""
     },
     "enabled_by_default": {
-        "default": False,
+        "default": False
     },
     "enabled_pattern": {
-        "default": "*",
+        "default": "*"
     },
     "again": {
-        "default": again_button_schema,
+        "default": again_button_schema
     },
     "hard": {
-        "default": hard_button_schema,
+        "default": hard_button_schema
     },
     "good": {
-        "default": good_button_schema,
+        "default": good_button_schema
     },
     "easy": {
-        "default": easy_button_schema,
+        "default": easy_button_schema
     }
 }

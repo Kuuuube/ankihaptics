@@ -87,6 +87,28 @@ class AnkiHaptics:
 
         scan_button_text = "Scan for Devices" if self.websocket_command != "start_scanning" else "Stop Scanning for Devices"
 
+        if len(self.client.devices) <= 0:
+            vertical_layout.addWidget(QLabel("No devices found. Websocket status code: " + self.websocket_status))
+            def trigger_device_scanning():
+                if self.websocket_command != "start_scanning":
+                    scan_button.setText("Stop Scanning for Devices")
+                    self.websocket_command = "start_scanning"
+                elif self.websocket_command == "start_scanning":
+                    scan_button.setText("Scan for Devices")
+                    self.websocket_command = "stop_scanning"
+            scan_button = QPushButton(scan_button_text, clicked = trigger_device_scanning)
+            vertical_layout.addWidget(scan_button)
+            def trigger_refresh():
+                settings_window.close()
+                self.setup_settings_window(config)
+            refresh_button = QPushButton("Refresh", clicked = trigger_refresh)
+            vertical_layout.addWidget(refresh_button)
+            settings_window.setLayout(vertical_layout)
+            settings_window.resize(500, 400)
+            if settings_window.exec():
+                settings_window.show()
+            return
+
         #Top buttons
         top_buttons_horizontal_layout = QHBoxLayout()
         vertical_layout.addLayout(top_buttons_horizontal_layout)

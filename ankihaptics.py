@@ -98,10 +98,10 @@ class AnkiHaptics:
         scan_button = QPushButton("Scan for Devices", clicked = trigger_device_scanning)
         scan_button.setObjectName("ankihaptics_scan_button")
         top_buttons_horizontal_layout.addWidget(scan_button)
-        def trigger_dropdown_refresh():
-            devices_combobox.clear()
-            devices_combobox.addItems([*((x["device_name"]) for x in config.devices)])
-        refresh_button = QPushButton("Refresh", clicked = trigger_dropdown_refresh)
+        def trigger_refresh():
+            settings_window.close()
+            self.setup_settings_window(config)
+        refresh_button = QPushButton("Refresh", clicked = trigger_refresh)
         top_buttons_horizontal_layout.addWidget(refresh_button)
 
         #Above Tabs

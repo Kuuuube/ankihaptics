@@ -74,7 +74,7 @@ class AnkiHaptics:
         if self.websocket_status != "OK":
             vertical_layout.addWidget(QLabel("Failed to connect to websocket. Status code: " + self.websocket_status))
             def trigger_websocket_reconnect():
-                while self.websocket_thread.is_alive():
+                while self.websocket_thread and self.websocket_thread.is_alive():
                     self.keep_websocket_thread_alive = False
                     time.sleep(1) #thread should not be alive here but incase it is, give it time to die before spawning another
                 self.keep_websocket_thread_alive = True
@@ -104,7 +104,7 @@ class AnkiHaptics:
             scan_button = QPushButton(scan_button_text, clicked = trigger_device_scanning)
             vertical_layout.addWidget(scan_button)
             def trigger_websocket_reconnect():
-                while self.websocket_thread.is_alive():
+                while self.websocket_thread and self.websocket_thread.is_alive():
                     self.keep_websocket_thread_alive = False
                     time.sleep(1) #block main thread to give time for other thread to die before spawning another
                 self.keep_websocket_thread_alive = True

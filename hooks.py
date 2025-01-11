@@ -9,7 +9,7 @@ ease_to_button = {
 }
 
 def handle_hooks(mw, client, hook):
-    config = config_util.get_config(mw)
+    config = config_util.ensure_device_settings(config_util.get_config(mw), client.devices)
     devices = client.devices
     for config_device in config["devices"]:
         if config_device[hook]["enabled"]:

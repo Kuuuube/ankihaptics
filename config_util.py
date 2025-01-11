@@ -1,5 +1,13 @@
 from .config_schemas import config_schema, device_schema
 
+def ensure_device_settings(config, devices):
+    device_names = [*((x["DeviceName"]) for x in devices)]
+    config_device_names = [*((x["device_name"]) for x in config.devices)]
+    for device_name in device_names:
+        if device_name not in config_device_names:
+            config.devices.append({"device_name": device_name})
+    return validate_config(config)
+
 def set_config(mw, namespace_config):
     config = dict(namespace_config.__dict__)
     for key in list(config.keys()):

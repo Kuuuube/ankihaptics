@@ -26,7 +26,7 @@ class AnkiHaptics:
             self.keep_websocket_thread_alive = True
             self.websocket_command = ""
             self.websocket_status = ""
-            self.websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self.get_devices(config)))
+            self.websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self.start_websocket(config)))
             self.websocket_thread.start()
 
             #Prevent Anki from hanging forever due to infinitely running thread
@@ -35,7 +35,7 @@ class AnkiHaptics:
     def cleanup(self):
         self.keep_websocket_thread_alive = False
 
-    async def get_devices(self, config):
+    async def start_websocket(self, config):
         self.client = Client("Anki Haptics Client", ProtocolSpec.v3)
         connector = WebsocketConnector(config.websocket_path, logger = self.client.logger)
 
@@ -64,7 +64,7 @@ class AnkiHaptics:
 
         await self.client.disconnect()
         self.websocket_status = "DISCONNECTED"
-
+    
     def setup_settings_window(self, config):
         settings_window = QDialog(mw)
         vertical_layout = QVBoxLayout()
@@ -78,7 +78,7 @@ class AnkiHaptics:
                     self.keep_websocket_thread_alive = False
                     time.sleep(1) #thread should not be alive here but incase it is, give it time to die before spawning another
                 self.keep_websocket_thread_alive = True
-                self.websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self.get_devices(config))).start()
+                self.websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self.start_websocket(config))).start()
                 time.sleep(config.reconnect_delay) #block main thread to give time for other thread to connect before resetting the window
                 settings_window.close()
                 self.setup_settings_window(config)
@@ -108,7 +108,7 @@ class AnkiHaptics:
                     self.keep_websocket_thread_alive = False
                     time.sleep(1) #block main thread to give time for other thread to die before spawning another
                 self.keep_websocket_thread_alive = True
-                threading.Thread(target = lambda: util.start_async(lambda: self.get_devices(config))).start()
+                threading.Thread(target = lambda: util.start_async(lambda: self.start_websocket(config))).start()
                 time.sleep(config.reconnect_delay) #block main thread to give time for other thread to connect before resetting the window
                 settings_window.close()
                 self.setup_settings_window(config)

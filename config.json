@@ -26,6 +26,16 @@
                 "enabled": true,
                 "strength": 1.0,
                 "duration": 1.0
+            },
+            "show_question": {
+                "enabled": false,
+                "strength": 0.1,
+                "duration": 1.0
+            },
+            "show_answer": {
+                "enabled": false,
+                "strength": 0.1,
+                "duration": 1.0
             }
         },
         {

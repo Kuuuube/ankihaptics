@@ -5,6 +5,9 @@ config_schema = {
     "websocket_path": {
         "default": "ws://127.0.0.1:12345"
     },
+    "reconnect_delay": {
+        "default": 1
+    },
     "devices": {
         "default": [],
     }

@@ -74,7 +74,7 @@ class AnkiHaptics:
             vertical_layout.addWidget(QLabel("Failed to connect to websocket. Status code: " + self.websocket_status))
             def trigger_websocket_reconnect():
                 threading.Thread(target = lambda: util.start_async(lambda: self.get_devices(config))).start()
-                time.sleep(1) #block main thread for 1 second to give time for other thread to connect before resetting the window
+                time.sleep(config.reconnect_delay) #block main thread to give time for other thread to connect before resetting the window
                 settings_window.close()
                 self.setup_settings_window(config)
             reconnect_button = QPushButton("Reconnect", clicked = trigger_websocket_reconnect)

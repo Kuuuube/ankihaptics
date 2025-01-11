@@ -179,24 +179,34 @@ class AnkiHaptics:
                 "enabled_by_default": mw.findChild(QCheckBox, "ankihaptics_device_enabled").isChecked(),
                 "enabled_pattern": mw.findChild(QLineEdit, "ankihaptics_device_enabled_pattern").text(),
                 "again": {
-                    "enabled": mw.findChild(QGroupBox, "ankihaptics_again_button_box").isChecked(),
-                    "strength": round(mw.findChild(QSlider, "ankihaptics_again_button_strength").value() / 99, 2),
-                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_again_button_duration").text()),
+                    "enabled": mw.findChild(QGroupBox, "ankihaptics_again_box").isChecked(),
+                    "strength": round(mw.findChild(QSlider, "ankihaptics_again_strength").value() / 99, 2),
+                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_again_duration").text()),
                 },
                 "hard": {
-                    "enabled": mw.findChild(QGroupBox, "ankihaptics_hard_button_box").isChecked(),
-                    "strength": round(mw.findChild(QSlider, "ankihaptics_hard_button_strength").value() / 99, 2),
-                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_hard_button_duration").text()),
+                    "enabled": mw.findChild(QGroupBox, "ankihaptics_hard_box").isChecked(),
+                    "strength": round(mw.findChild(QSlider, "ankihaptics_hard_strength").value() / 99, 2),
+                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_hard_duration").text()),
                 },
                 "good": {
-                    "enabled": mw.findChild(QGroupBox, "ankihaptics_good_button_box").isChecked(),
-                    "strength": round(mw.findChild(QSlider, "ankihaptics_good_button_strength").value() / 99, 2),
-                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_good_button_duration").text()),
+                    "enabled": mw.findChild(QGroupBox, "ankihaptics_good_box").isChecked(),
+                    "strength": round(mw.findChild(QSlider, "ankihaptics_good_strength").value() / 99, 2),
+                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_good_duration").text()),
                 },
                 "easy": {
-                    "enabled": mw.findChild(QGroupBox, "ankihaptics_easy_button_box").isChecked(),
-                    "strength": round(mw.findChild(QSlider, "ankihaptics_easy_button_strength").value() / 99, 2),
-                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_easy_button_duration").text()),
+                    "enabled": mw.findChild(QGroupBox, "ankihaptics_easy_box").isChecked(),
+                    "strength": round(mw.findChild(QSlider, "ankihaptics_easy_strength").value() / 99, 2),
+                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_easy_duration").text()),
+                },
+                "show_question": {
+                    "enabled": mw.findChild(QGroupBox, "ankihaptics_show_question_box").isChecked(),
+                    "strength": round(mw.findChild(QSlider, "ankihaptics_show_question_strength").value() / 99, 2),
+                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_show_question_duration").text()),
+                },
+                "show_answer": {
+                    "enabled": mw.findChild(QGroupBox, "ankihaptics_show_answer_box").isChecked(),
+                    "strength": round(mw.findChild(QSlider, "ankihaptics_show_answer_strength").value() / 99, 2),
+                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_show_answer_duration").text()),
                 }
             }
             if write_to_anki:
@@ -243,123 +253,51 @@ class AnkiHaptics:
 
 
         #Answer Buttons Tab
-        answer_buttons_tab = QWidget()
-        answer_buttons_tab_scroll_area = QScrollArea()
-        answer_buttons_tab_scroll_area.setWidgetResizable(True)
-        answer_buttons_tab_vertical_layout = QVBoxLayout()
-        answer_buttons_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        anki_actions_tab = QWidget()
+        anki_actions_tab_scroll_area = QScrollArea()
+        anki_actions_tab_scroll_area.setWidgetResizable(True)
+        anki_actions_tab_vertical_layout = QVBoxLayout()
+        anki_actions_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        answer_buttons_tab.setLayout(answer_buttons_tab_vertical_layout)
-        answer_buttons_tab_scroll_area.setWidget(answer_buttons_tab)
-        tabs_frame.addTab(answer_buttons_tab_scroll_area, "Answer Buttons")
+        anki_actions_tab.setLayout(anki_actions_tab_vertical_layout)
+        anki_actions_tab_scroll_area.setWidget(anki_actions_tab)
+        tabs_frame.addTab(anki_actions_tab_scroll_area, "Anki Actions")
 
-        #Again Button Settings
-        again_button_box = QGroupBox("Again Button")
-        again_button_box.setCheckable(True)
-        again_button_box.setChecked(config.devices[device_index]["again"]["enabled"])
-        again_button_box.setObjectName("ankihaptics_again_button_box")
-        again_button_box_layout = QVBoxLayout()
+        anki_actions_settings = [
+            {"display_name": "Again Button", "config_name": "again"},
+            {"display_name": "Hard Button", "config_name": "hard"},
+            {"display_name": "Good Button", "config_name": "good"},
+            {"display_name": "Easy Button", "config_name": "easy"},
+            {"display_name": "Show Question", "config_name": "show_question"},
+            {"display_name": "Show Answer", "config_name": "show_answer"},
+        ]
 
-        again_button_strength_box = QHBoxLayout()
-        again_button_strength_box.addWidget(QLabel("Strength"))
-        again_button_strength = QSlider(Qt.Orientation.Horizontal)
-        again_button_strength.setValue(int(config.devices[device_index]["again"]["strength"] * 100))
-        again_button_strength.setObjectName("ankihaptics_again_button_strength")
-        again_button_strength_box.addWidget(again_button_strength)
-        again_button_box_layout.addLayout(again_button_strength_box)
+        for anki_action_setting in anki_actions_settings:
+            anki_action_box = QGroupBox(anki_action_setting["display_name"])
+            anki_action_box.setCheckable(True)
+            anki_action_box.setChecked(config.devices[device_index][anki_action_setting["config_name"]]["enabled"])
+            anki_action_box.setObjectName("ankihaptics_" + anki_action_setting["config_name"] + "_box")
+            anki_action_box_layout = QVBoxLayout()
 
-        again_button_duration_box = QHBoxLayout()
-        again_button_duration_box.addWidget(QLabel("Duration"))
-        again_button_duration = QLineEdit()
-        again_button_duration.setText(str(config.devices[device_index]["again"]["duration"]))
-        again_button_duration.setObjectName("ankihaptics_again_button_duration")
-        again_button_duration_box.addWidget(again_button_duration)
-        again_button_duration_box.addWidget(QLabel("seconds"))
-        again_button_box_layout.addLayout(again_button_duration_box)
+            anki_action_strength_box = QHBoxLayout()
+            anki_action_strength_box.addWidget(QLabel("Strength"))
+            anki_action_strength = QSlider(Qt.Orientation.Horizontal)
+            anki_action_strength.setValue(int(config.devices[device_index][anki_action_setting["config_name"]]["strength"] * 100))
+            anki_action_strength.setObjectName("ankihaptics_" + anki_action_setting["config_name"] + "_strength")
+            anki_action_strength_box.addWidget(anki_action_strength)
+            anki_action_box_layout.addLayout(anki_action_strength_box)
 
-        again_button_box.setLayout(again_button_box_layout)
-        answer_buttons_tab_vertical_layout.addWidget(again_button_box)
+            anki_action_duration_box = QHBoxLayout()
+            anki_action_duration_box.addWidget(QLabel("Duration"))
+            anki_action_duration = QLineEdit()
+            anki_action_duration.setText(str(config.devices[device_index][anki_action_setting["config_name"]]["duration"]))
+            anki_action_duration.setObjectName("ankihaptics_" + anki_action_setting["config_name"] + "_duration")
+            anki_action_duration_box.addWidget(anki_action_duration)
+            anki_action_duration_box.addWidget(QLabel("seconds"))
+            anki_action_box_layout.addLayout(anki_action_duration_box)
 
-        #Hard Button Settings
-        hard_button_box = QGroupBox("Hard Button")
-        hard_button_box.setCheckable(True)
-        hard_button_box.setChecked(config.devices[device_index]["hard"]["enabled"])
-        hard_button_box.setObjectName("ankihaptics_hard_button_box")
-        hard_button_box_layout = QVBoxLayout()
-
-        hard_button_strength_box = QHBoxLayout()
-        hard_button_strength_box.addWidget(QLabel("Strength"))
-        hard_button_strength = QSlider(Qt.Orientation.Horizontal)
-        hard_button_strength.setValue(int(config.devices[device_index]["hard"]["strength"] * 100))
-        hard_button_strength.setObjectName("ankihaptics_hard_button_strength")
-        hard_button_strength_box.addWidget(hard_button_strength)
-        hard_button_box_layout.addLayout(hard_button_strength_box)
-
-        hard_button_duration_box = QHBoxLayout()
-        hard_button_duration_box.addWidget(QLabel("Duration"))
-        hard_button_duration = QLineEdit()
-        hard_button_duration.setText(str(config.devices[device_index]["hard"]["duration"]))
-        hard_button_duration.setObjectName("ankihaptics_hard_button_duration")
-        hard_button_duration_box.addWidget(hard_button_duration)
-        hard_button_duration_box.addWidget(QLabel("seconds"))
-        hard_button_box_layout.addLayout(hard_button_duration_box)
-
-        hard_button_box.setLayout(hard_button_box_layout)
-        answer_buttons_tab_vertical_layout.addWidget(hard_button_box)
-
-        #Good Button Settings
-        good_button_box = QGroupBox("Good Button")
-        good_button_box.setCheckable(True)
-        good_button_box.setChecked(config.devices[device_index]["good"]["enabled"])
-        good_button_box.setObjectName("ankihaptics_good_button_box")
-        good_button_box_layout = QVBoxLayout()
-
-        good_button_strength_box = QHBoxLayout()
-        good_button_strength_box.addWidget(QLabel("Strength"))
-        good_button_strength = QSlider(Qt.Orientation.Horizontal)
-        good_button_strength.setValue(int(config.devices[device_index]["good"]["strength"] * 100))
-        good_button_strength.setObjectName("ankihaptics_good_button_strength")
-        good_button_strength_box.addWidget(good_button_strength)
-        good_button_box_layout.addLayout(good_button_strength_box)
-
-        good_button_duration_box = QHBoxLayout()
-        good_button_duration_box.addWidget(QLabel("Duration"))
-        good_button_duration = QLineEdit()
-        good_button_duration.setText(str(config.devices[device_index]["good"]["duration"]))
-        good_button_duration.setObjectName("ankihaptics_good_button_duration")
-        good_button_duration_box.addWidget(good_button_duration)
-        good_button_duration_box.addWidget(QLabel("seconds"))
-        good_button_box_layout.addLayout(good_button_duration_box)
-
-        good_button_box.setLayout(good_button_box_layout)
-        answer_buttons_tab_vertical_layout.addWidget(good_button_box)
-
-        #Easy Button Settings
-        easy_button_box = QGroupBox("Easy Button")
-        easy_button_box.setCheckable(True)
-        easy_button_box.setChecked(config.devices[device_index]["easy"]["enabled"])
-        easy_button_box.setObjectName("ankihaptics_easy_button_box")
-        easy_button_box_layout = QVBoxLayout()
-
-        easy_button_strength_box = QHBoxLayout()
-        easy_button_strength_box.addWidget(QLabel("Strength"))
-        easy_button_strength = QSlider(Qt.Orientation.Horizontal)
-        easy_button_strength.setValue(int(config.devices[device_index]["easy"]["strength"] * 100))
-        easy_button_strength.setObjectName("ankihaptics_easy_button_strength")
-        easy_button_strength_box.addWidget(easy_button_strength)
-        easy_button_box_layout.addLayout(easy_button_strength_box)
-
-        easy_button_duration_box = QHBoxLayout()
-        easy_button_duration_box.addWidget(QLabel("Duration"))
-        easy_button_duration = QLineEdit()
-        easy_button_duration.setText(str(config.devices[device_index]["easy"]["duration"]))
-        easy_button_duration.setObjectName("ankihaptics_easy_button_duration")
-        easy_button_duration_box.addWidget(easy_button_duration)
-        easy_button_duration_box.addWidget(QLabel("seconds"))
-        easy_button_box_layout.addLayout(easy_button_duration_box)
-
-        easy_button_box.setLayout(easy_button_box_layout)
-        answer_buttons_tab_vertical_layout.addWidget(easy_button_box)
+            anki_action_box.setLayout(anki_action_box_layout)
+            anki_actions_tab_vertical_layout.addWidget(anki_action_box)
 
 
         #Advanced Tab

@@ -2,6 +2,7 @@
     "version": 1,
     "websocket_path": "ws://127.0.0.1:12345",
     "reconnect_delay": 1,
+    "websocket_polling_delay": 1,
     "devices": [
         {
             "device_name": "*",

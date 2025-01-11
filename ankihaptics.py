@@ -60,7 +60,7 @@ class AnkiHaptics:
                 await self.client.stop_scanning()
                 currently_scanning = False
 
-            await asyncio.sleep(1)
+            await asyncio.sleep(config.websocket_polling_delay)
 
         await self.client.disconnect()
         self.websocket_status = "DISCONNECTED"

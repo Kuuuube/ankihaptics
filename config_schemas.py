@@ -8,6 +8,9 @@ config_schema = {
     "reconnect_delay": {
         "default": 1
     },
+    "websocket_polling_delay": {
+        "default": 1
+    },
     "devices": {
         "default": [],
     }

@@ -17,7 +17,9 @@ def handle_hooks(mw, client, hook):
             if client_device:
                 print("Activating device. Strength: " + str(config_device[hook]["strength"]) + ", Duration: " + str(config_device[hook]["duration"]) + "s")
                 if len(client_device.actuators) != 0:
-                    haptics_commands.run_scalar_command(client_device.actuators[0], config_device[hook]["strength"], 0, config_device[hook]["duration"])
+                    target_actuators = [client_device.actuators[0]]
+                    for target_actuator in target_actuators:
+                        haptics_commands.run_scalar_command(target_actuator, int(config_device[hook]["strength"] * (target_actuator.step_count / 99)), 0, config_device[hook]["duration"])
 
 def answer_button_press(mw, client, reviewer, card, ease):
     button_name = ease_to_button[ease]

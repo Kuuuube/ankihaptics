@@ -1,5 +1,6 @@
 {
     "version": 1,
+    "websocket_path": "ws://127.0.0.1:12345",
     "devices": [
         {
             "device_name": "*",

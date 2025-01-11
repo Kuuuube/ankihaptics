@@ -2,6 +2,9 @@ config_schema = {
     "version": {
         "default": 1,
     },
+    "websocket_path": {
+        "default": "ws://127.0.0.1:12345"
+    },
     "devices": {
         "default": [],
     }

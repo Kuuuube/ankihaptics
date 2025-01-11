@@ -15,6 +15,8 @@ from . import hooks, config_util, util
 class AnkiHaptics:
     def __init__(self, mw):
         if mw:
+            self.config = types.SimpleNamespace(**config_util.get_config(mw))
+
             self.menuAction = QAction("Anki Haptics Settings", mw, triggered = self.setup_settings_window)
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
@@ -31,7 +33,7 @@ class AnkiHaptics:
 
     async def get_devices(self):
         self.client = Client("Anki Haptics Client", ProtocolSpec.v3)
-        connector = WebsocketConnector("ws://127.0.0.1:12345", logger = self.client.logger)
+        connector = WebsocketConnector(self.config.websocket_path, logger = self.client.logger)
 
         try:
             await self.client.connect(connector)
@@ -53,7 +55,7 @@ class AnkiHaptics:
         await self.client.disconnect()
 
     def setup_settings_window(self):
-        config = types.SimpleNamespace(**config_util.get_config(mw))
+        config = self.config
 
         settings_window = QDialog(mw)
         vertical_layout = QVBoxLayout()

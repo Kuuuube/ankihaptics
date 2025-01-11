@@ -22,11 +22,11 @@ class AnkiHaptics:
             threading.Thread(target = lambda: util.start_async(self.get_devices)).start()
 
             #Prevent Anki from hanging forever due to infinitely running thread
-            self.keep_thread_alive = True
+            self.keep_websocket_thread_alive = True
             gui_hooks.profile_will_close.append(self.cleanup)
 
     def cleanup(self):
-        self.keep_thread_alive = False
+        self.keep_websocket_thread_alive = False
 
     async def get_devices(self):
         self.client = Client("Anki Haptics Client", ProtocolSpec.v3)
@@ -46,7 +46,7 @@ class AnkiHaptics:
 
         hooks.register_hooks(mw, self.client)
 
-        while self.keep_thread_alive:
+        while self.keep_websocket_thread_alive:
             await asyncio.sleep(1)
 
         await self.client.disconnect()

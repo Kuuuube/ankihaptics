@@ -2,6 +2,7 @@ import types
 import asyncio
 import logging
 import threading
+import time
 
 from aqt import mw, gui_hooks
 from aqt.qt import (Qt, QAction, QDialog, QVBoxLayout, QHBoxLayout,
@@ -24,6 +25,7 @@ class AnkiHaptics:
             self.client = None
             self.keep_websocket_thread_alive = True
             self.websocket_command = ""
+            self.websocket_status = ""
             threading.Thread(target = lambda: util.start_async(lambda: self.get_devices(config))).start()
 
             #Prevent Anki from hanging forever due to infinitely running thread
@@ -38,7 +40,9 @@ class AnkiHaptics:
 
         try:
             await self.client.connect(connector)
+            self.websocket_status = "OK"
         except Exception as e:
+            self.websocket_status = "ERROR\n" + str(e)
             logging.error(f"Could not connect to server, exiting: {e}")
             return
 
@@ -58,12 +62,28 @@ class AnkiHaptics:
             await asyncio.sleep(1)
 
         await self.client.disconnect()
+        self.websocket_status = "DISCONNECTED"
 
     def setup_settings_window(self, config):
         settings_window = QDialog(mw)
         vertical_layout = QVBoxLayout()
 
         default_device_name = "*"
+
+        if self.websocket_status != "OK":
+            vertical_layout.addWidget(QLabel("Failed to connect to websocket. Status code: " + self.websocket_status))
+            def trigger_websocket_reconnect():
+                threading.Thread(target = lambda: util.start_async(lambda: self.get_devices(config))).start()
+                time.sleep(1) #block main thread for 1 second to give time for other thread to connect before resetting the window
+                settings_window.close()
+                self.setup_settings_window(config)
+            reconnect_button = QPushButton("Reconnect", clicked = trigger_websocket_reconnect)
+            vertical_layout.addWidget(reconnect_button)
+            settings_window.setLayout(vertical_layout)
+            settings_window.resize(500, 400)
+            if settings_window.exec():
+                settings_window.show()
+            return
 
         #Top buttons
         top_buttons_horizontal_layout = QHBoxLayout()

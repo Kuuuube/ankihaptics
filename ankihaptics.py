@@ -22,10 +22,11 @@ class AnkiHaptics:
             mw.form.menuTools.addAction(self.menuAction)
 
             self.client = None
+            self.keep_websocket_thread_alive = True
+            self.websocket_command = ""
             threading.Thread(target = lambda: util.start_async(lambda: self.get_devices(config))).start()
 
             #Prevent Anki from hanging forever due to infinitely running thread
-            self.keep_websocket_thread_alive = True
             gui_hooks.profile_will_close.append(self.cleanup)
 
     def cleanup(self):
@@ -41,15 +42,19 @@ class AnkiHaptics:
             logging.error(f"Could not connect to server, exiting: {e}")
             return
 
-        await self.client.start_scanning()
-        await asyncio.sleep(5)
-        await self.client.stop_scanning()
-
         self.client.logger.info(f"Devices: {self.client.devices}")
 
         hooks.register_hooks(mw, self.client)
 
+        currently_scanning = False
         while self.keep_websocket_thread_alive:
+            if self.websocket_command == "start_scanning" and not currently_scanning:
+                await self.client.start_scanning()
+                currently_scanning = True
+            elif self.websocket_command == "stop_scanning" and currently_scanning:
+                await self.client.stop_scanning()
+                currently_scanning = False
+
             await asyncio.sleep(1)
 
         await self.client.disconnect()
@@ -59,6 +64,20 @@ class AnkiHaptics:
         vertical_layout = QVBoxLayout()
 
         default_device_name = "*"
+
+        #Top buttons
+        top_buttons_horizontal_layout = QHBoxLayout()
+        vertical_layout.addLayout(top_buttons_horizontal_layout)
+        def trigger_device_scanning():
+            if self.websocket_command != "start_scanning":
+                mw.findChild(QPushButton, "ankihaptics_scan_button").setText("Stop Scanning for Devices")
+                self.websocket_command = "start_scanning"
+            elif self.websocket_command == "start_scanning":
+                mw.findChild(QPushButton, "ankihaptics_scan_button").setText("Scan for Devices")
+                self.websocket_command = "stop_scanning"
+        scan_button = QPushButton("Scan for Devices", clicked = trigger_device_scanning)
+        scan_button.setObjectName("ankihaptics_scan_button")
+        top_buttons_horizontal_layout.addWidget(scan_button)
 
         #Above Tabs
         devices_horizontal_layout = QHBoxLayout()

@@ -142,14 +142,14 @@ class AnkiHaptics:
         #Above Tabs
         devices_horizontal_layout = QHBoxLayout()
         devices_combobox = QComboBox()
-        devices_combobox.addItems([*((x["DeviceName"]) for x in self.client.devices)])
+        devices_combobox.addItems([*((x.device_name) for x in self.client.devices)])
         devices_combobox.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         devices_horizontal_layout.addWidget(QLabel("Device: "))
         devices_combobox.setCurrentText(default_device_name)
         def get_device_index(config, device_name):
             config = config_util.ensure_device_settings(config, self.client.devices)
-            for i, device in enumerate(config.devices):
-                if device["device_name"] == device_name:
+            for i, config_device in enumerate(config.devices):
+                if config_device["device_name"] == device_name:
                     return i
             return 0
         def update_vertical_layout_tabs(device_name):

@@ -26,11 +26,15 @@ class AnkiHaptics:
             self.keep_websocket_thread_alive = True
             self.websocket_command = ""
             self.websocket_status = ""
-            self.websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self.start_websocket(config)))
-            self.websocket_thread.start()
+            self.websocket_thread = None
+            self.start_websocket_thread(config)
 
             #Prevent Anki from hanging forever due to infinitely running thread
             gui_hooks.profile_will_close.append(self.cleanup)
+
+    def start_websocket_thread(self, config):
+        self.websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self.start_websocket(config)))
+        self.websocket_thread.start()
 
     def cleanup(self):
         self.keep_websocket_thread_alive = False
@@ -71,17 +75,18 @@ class AnkiHaptics:
 
         default_device_name = "*"
 
+        def trigger_websocket_reconnect():
+            while self.websocket_thread and self.websocket_thread.is_alive():
+                self.keep_websocket_thread_alive = False
+                time.sleep(config.websocket_polling_delay * 2) #block main thread to give time for other thread to die before spawning another
+            self.keep_websocket_thread_alive = True
+            self.start_websocket_thread(config)
+            time.sleep(config.reconnect_delay) #block main thread to give time for other thread to connect before resetting the window
+            settings_window.close()
+            self.setup_settings_window(config)
+
         if self.websocket_status != "OK":
             vertical_layout.addWidget(QLabel("Failed to connect to websocket. Status code: " + self.websocket_status))
-            def trigger_websocket_reconnect():
-                while self.websocket_thread and self.websocket_thread.is_alive():
-                    self.keep_websocket_thread_alive = False
-                    time.sleep(1) #thread should not be alive here but incase it is, give it time to die before spawning another
-                self.keep_websocket_thread_alive = True
-                self.websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self.start_websocket(config))).start()
-                time.sleep(config.reconnect_delay) #block main thread to give time for other thread to connect before resetting the window
-                settings_window.close()
-                self.setup_settings_window(config)
             reconnect_button = QPushButton("Reconnect", clicked = trigger_websocket_reconnect)
             vertical_layout.addWidget(reconnect_button)
             settings_window.setLayout(vertical_layout)
@@ -103,15 +108,6 @@ class AnkiHaptics:
                     self.websocket_command = "stop_scanning"
             scan_button = QPushButton(scan_button_text, clicked = trigger_device_scanning)
             vertical_layout.addWidget(scan_button)
-            def trigger_websocket_reconnect():
-                while self.websocket_thread and self.websocket_thread.is_alive():
-                    self.keep_websocket_thread_alive = False
-                    time.sleep(1) #block main thread to give time for other thread to die before spawning another
-                self.keep_websocket_thread_alive = True
-                threading.Thread(target = lambda: util.start_async(lambda: self.start_websocket(config))).start()
-                time.sleep(config.reconnect_delay) #block main thread to give time for other thread to connect before resetting the window
-                settings_window.close()
-                self.setup_settings_window(config)
             reconnect_button = QPushButton("Reconnect", clicked = trigger_websocket_reconnect)
             vertical_layout.addWidget(reconnect_button)
             def trigger_refresh():

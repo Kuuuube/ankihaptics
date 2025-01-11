@@ -1,1 +1,1 @@
-zip -r ankiplug_0.0.0.zip *.py lib *.json README.md LICENSE
+zip -r ankihaptics_0.0.0.zip *.py lib *.json README.md LICENSE

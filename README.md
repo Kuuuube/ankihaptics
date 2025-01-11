@@ -1,4 +1,4 @@
-# Anki Plug
+# Anki Haptics
 
 
 ## Development

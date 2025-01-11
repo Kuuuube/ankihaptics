@@ -85,18 +85,19 @@ class AnkiHaptics:
                 settings_window.show()
             return
 
+        scan_button_text = "Scan for Devices" if self.websocket_command != "start_scanning" else "Stop Scanning for Devices"
+
         #Top buttons
         top_buttons_horizontal_layout = QHBoxLayout()
         vertical_layout.addLayout(top_buttons_horizontal_layout)
         def trigger_device_scanning():
             if self.websocket_command != "start_scanning":
-                mw.findChild(QPushButton, "ankihaptics_scan_button").setText("Stop Scanning for Devices")
+                scan_button.setText("Stop Scanning for Devices")
                 self.websocket_command = "start_scanning"
             elif self.websocket_command == "start_scanning":
-                mw.findChild(QPushButton, "ankihaptics_scan_button").setText("Scan for Devices")
+                scan_button.setText("Scan for Devices")
                 self.websocket_command = "stop_scanning"
-        scan_button = QPushButton("Scan for Devices", clicked = trigger_device_scanning)
-        scan_button.setObjectName("ankihaptics_scan_button")
+        scan_button = QPushButton(scan_button_text, clicked = trigger_device_scanning)
         top_buttons_horizontal_layout.addWidget(scan_button)
         def trigger_refresh():
             settings_window.close()

@@ -1,5 +1,5 @@
 from aqt import gui_hooks
-from . import config_util
+from . import config_util, haptics_commands
 
 ease_to_button = {
     1: "again",
@@ -10,9 +10,14 @@ ease_to_button = {
 
 def handle_hooks(mw, client, hook):
     config = config_util.get_config(mw)
-    for device in config["devices"]:
-        if device[hook]["enabled"]:
-            print("Activating device. Strength: " + str(device[hook]["strength"]) + ", Duration: " + str(device[hook]["duration"]) + "s")
+    devices = client.devices
+    for config_device in config["devices"]:
+        if config_device[hook]["enabled"]:
+            client_device = [device for device in devices if device["DeviceName"] == config_device["device_name"]]
+            if client_device:
+                print("Activating device. Strength: " + str(config_device[hook]["strength"]) + ", Duration: " + str(config_device[hook]["duration"]) + "s")
+                if len(client_device.actuators) != 0:
+                    haptics_commands.run_scalar_command(client_device.actuators[0], config_device[hook]["strength"], 0, config_device[hook]["duration"])
 
 def answer_button_press(mw, client, reviewer, card, ease):
     button_name = ease_to_button[ease]

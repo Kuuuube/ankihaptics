@@ -20,6 +20,16 @@ def reset_config(mw):
     default_config = dict(map(lambda item: (item[0], item[1]["default"]), config_schema.items()))
     mw.addonManager.writeConfig(__name__, default_config)
 
+def get_dict_defaults(schema):
+    default_dict = {}
+    for schema_key in schema.keys():
+        if type(schema[schema_key]["default"]) is dict:
+            default_dict[schema_key] = get_dict_defaults(schema[schema_key])
+        else:
+            default_dict[schema_key] = schema[schema_key]["default"]
+
+    return default_dict
+
 def dict_validator(target_dict, schema):
     new_dict = target_dict
 
@@ -40,7 +50,11 @@ def dict_validator(target_dict, schema):
                         continue
                 else:
                     continue
-        new_dict[schema_key] = schema[schema_key]["default"]
+
+        if type(schema[schema_key]["default"]) is dict:
+            new_dict[schema_key] = get_dict_defaults(schema[schema_key]["default"])
+        else:
+            new_dict[schema_key] = schema[schema_key]["default"]
 
     return new_dict
 

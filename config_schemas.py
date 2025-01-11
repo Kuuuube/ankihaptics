@@ -1,119 +1,119 @@
 config_schema = {
     "version": {
-        "default": 1
+        "default": 1,
     },
     "websocket_path": {
-        "default": "ws://127.0.0.1:12345"
+        "default": "ws://127.0.0.1:12345",
     },
     "reconnect_delay": {
-        "default": 1
+        "default": 1,
     },
     "websocket_polling_delay": {
-        "default": 1
+        "default": 1,
     },
     "devices": {
         "default": [],
-    }
+    },
 }
 
 again_button_schema = {
     "enabled": {
-        "default": False
+        "default": False,
     },
     "strength": {
-        "default": 0.1
+        "default": 0.1,
     },
     "duration": {
-        "default": 1.0
-    }
+        "default": 1.0,
+    },
 }
 
 hard_button_schema = {
     "enabled": {
-        "default": False
+        "default": False,
     },
     "strength": {
-        "default": 0.25
+        "default": 0.25,
     },
     "duration": {
-        "default": 1.0
-    }
+        "default": 1.0,
+    },
 }
 
 good_button_schema = {
     "enabled": {
-        "default": True
+        "default": True,
     },
     "strength": {
-        "default": 0.5
+        "default": 0.5,
     },
     "duration": {
-        "default": 1.0
-    }
+        "default": 1.0,
+    },
 }
 
 easy_button_schema = {
     "enabled": {
-        "default": True
+        "default": True,
     },
     "strength": {
-        "default": 1.0
+        "default": 1.0,
     },
     "duration": {
-        "default": 1.0
-    }
+        "default": 1.0,
+    },
 }
 
 show_question_schema = {
     "enabled": {
-        "default": False
+        "default": False,
     },
     "strength": {
-        "default": 0.1
+        "default": 0.1,
     },
     "duration": {
-        "default": 1.0
-    }
+        "default": 1.0,
+    },
 }
 
 show_answer_schema = {
     "enabled": {
-        "default": False
+        "default": False,
     },
     "strength": {
-        "default": 0.1
+        "default": 0.1,
     },
     "duration": {
-        "default": 1.0
-    }
+        "default": 1.0,
+    },
 }
 
 device_schema = {
     "device_name": {
-        "default": ""
+        "default": "",
     },
     "enabled_by_default": {
-        "default": False
+        "default": False,
     },
     "enabled_pattern": {
-        "default": "*"
+        "default": "*",
     },
     "again": {
-        "default": again_button_schema
+        "default": again_button_schema,
     },
     "hard": {
-        "default": hard_button_schema
+        "default": hard_button_schema,
     },
     "good": {
-        "default": good_button_schema
+        "default": good_button_schema,
     },
     "easy": {
-        "default": easy_button_schema
+        "default": easy_button_schema,
     },
     "show_question": {
-        "default": show_question_schema
+        "default": show_question_schema,
     },
     "show_answer": {
-        "default": show_answer_schema
-    }
+        "default": show_answer_schema,
+    },
 }

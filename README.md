@@ -8,7 +8,21 @@ Haptics device integration for Anki.
 
 2. Run Intiface Central and start the server by clicking on the top left start button (▶). (Optionally, enable `Start Server when Intiface Central Launches` in `App Modes`)
 
-3. Start Anki. If Anki was already started, go to `Tools > Anki Haptics Settings` and click `Reconnect`.
+3. Install the Anki Haptics addon.
+
+    - Open Anki.
+
+    - On the top menu, go to `Tools` > `Add-ons`.
+
+    - Click `Get Add-ons...`.
+
+    - Input `placeholder`
+
+    - Click `OK`.
+
+    - Restart Anki
+
+4. Start Anki. If Anki was already started, go to `Tools > Anki Haptics Settings` and click `Reconnect`.
 
 ## Usage
 

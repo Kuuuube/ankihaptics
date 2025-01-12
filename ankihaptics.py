@@ -69,7 +69,7 @@ class AnkiHaptics:
 
         self.client.logger.info("Devices: " + str(self.client.devices))
 
-        hooks.register_hooks(aqt.mw, self.client)
+        hooks.register_hooks(aqt.mw, self)
 
         currently_scanning = False
         while self.keep_websocket_thread_alive:
@@ -79,6 +79,15 @@ class AnkiHaptics:
             elif self.websocket_command["command"] == "stop_scanning" and currently_scanning:
                 await self.client.stop_scanning()
                 currently_scanning = False
+            elif self.websocket_command["command"] == "scalar_cmd":
+                for device in self.websocket_command["args"]["devices"]:
+                    for actuator in device["actuators"]:
+                        await actuator.command(device["strength"])
+                    await asyncio.sleep(device["duration"])
+                    for actuator in device["actuators"]:
+                        await actuator.command(0.0)
+
+                self.websocket_command["command"] = None
 
             await asyncio.sleep(config["websocket_polling_delay_ms"] / 1000)
 

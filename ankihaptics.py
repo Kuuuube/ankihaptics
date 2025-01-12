@@ -84,6 +84,7 @@ class AnkiHaptics:
         self.websocket_status = "DISCONNECTED"
 
     def _setup_settings_window(self, config: dict) -> None:
+        config = config_util.ensure_device_settings(config, self.client.devices)
         settings_window = QDialog(aqt.mw)
         vertical_layout = QVBoxLayout()
 
@@ -160,9 +161,8 @@ class AnkiHaptics:
         devices_combobox.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         devices_horizontal_layout.addWidget(QLabel("Device: "))
         devices_combobox.setCurrentText(default_device_name)
-        def get_device_index(config: dict, device_name: str) -> int:
-            config = config_util.ensure_device_settings(config_util.get_config(aqt.mw), self.client.devices)
-            for i, config_device in enumerate(config["devices"]):
+        def get_device_index(input_config: dict, device_name: str) -> int:
+            for i, config_device in enumerate(input_config["devices"]):
                 if config_device["device_name"] == device_name:
                     return i
             return 0
@@ -171,7 +171,8 @@ class AnkiHaptics:
             tab_count = tabs_frame.count()
             for tab_index in reversed(range(tab_count)):
                 tabs_frame.widget(tab_index).deleteLater()
-            self._setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, device_name))
+            new_config = config_util.ensure_device_settings(config_util.get_config(aqt.mw), self.client.devices)
+            self._setup_vertical_layout_tabs(new_config, tabs_frame, get_device_index(new_config, device_name))
             tabs_frame.setCurrentIndex(current_tab)
         devices_combobox.currentTextChanged.connect(update_vertical_layout_tabs)
 

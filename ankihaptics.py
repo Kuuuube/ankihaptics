@@ -320,6 +320,10 @@ class AnkiHaptics:
         duration_tab_vertical_layout = QVBoxLayout()
         duration_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
+        duration_info_label = QLabel("Durations apply to all connected devices")
+        duration_tab_vertical_layout.addWidget(duration_info_label)
+        duration_info_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+
         anki_action_durations_settings = [
             {"display_name": "Again Button", "config_name": "again"},
             {"display_name": "Hard Button", "config_name": "hard"},

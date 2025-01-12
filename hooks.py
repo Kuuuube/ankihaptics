@@ -1,3 +1,5 @@
+import types
+
 from aqt import gui_hooks, main, reviewer
 from buttplug import Client
 
@@ -11,7 +13,7 @@ ease_to_button = {
 }
 
 def _handle_hooks(mw: main.AnkiQt, client: Client, hook: str) -> None:
-    config = config_util.ensure_device_settings(config_util.get_config(mw), client.devices)
+    config = config_util.ensure_device_settings(types.SimpleNamespace(**config_util.get_config(mw)), client.devices)
     devices = client.devices
     for config_device in config["devices"]:
         if config_device[hook]["enabled"]:

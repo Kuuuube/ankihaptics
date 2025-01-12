@@ -1,5 +1,6 @@
 import types
 
+import anki
 from aqt import gui_hooks, main, reviewer
 from buttplug import Client
 
@@ -25,14 +26,14 @@ def _handle_hooks(mw: main.AnkiQt, client: Client, hook: str) -> None:
                     for target_actuator in target_actuators:
                         haptics_commands.run_scalar_command(target_actuator, int(config_device[hook]["strength"] * (target_actuator.step_count / 99)), 0, config_device[hook]["duration"])
 
-def _answer_button_press(mw: main.AnkiQt, client: Client, _reviewer: reviewer.Reviewer, _card, ease: int) -> None:
+def _answer_button_press(mw: main.AnkiQt, client: Client, _reviewer: reviewer.Reviewer, _card: anki.cards.Card, ease: int) -> None:
     button_name = ease_to_button[ease]
     _handle_hooks(mw, client, button_name)
 
-def _show_question(mw: main.AnkiQt, client: Client, _card) -> None:
+def _show_question(mw: main.AnkiQt, client: Client, _card: anki.cards.Card) -> None:
     _handle_hooks(mw, client, "show_question")
 
-def _show_answer(mw: main.AnkiQt, client: Client, _card) -> None:
+def _show_answer(mw: main.AnkiQt, client: Client, _card: anki.cards.Card) -> None:
     _handle_hooks(mw, client, "show_answer")
 
 def register_hooks(mw: main.AnkiQt, client: Client) -> None:

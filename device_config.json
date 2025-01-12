@@ -1,0 +1,35 @@
+{
+    "device_name": "*",
+    "enabled_by_default": false,
+    "enabled_pattern": "*",
+    "again": {
+        "enabled": false,
+        "strength": 0.1,
+        "duration": 1.0
+    },
+    "hard": {
+        "enabled": false,
+        "strength": 0.25,
+        "duration": 1.0
+    },
+    "good": {
+        "enabled": true,
+        "strength": 0.5,
+        "duration": 1.0
+    },
+    "easy": {
+        "enabled": true,
+        "strength": 1.0,
+        "duration": 1.0
+    },
+    "show_question": {
+        "enabled": false,
+        "strength": 0.1,
+        "duration": 1.0
+    },
+    "show_answer": {
+        "enabled": false,
+        "strength": 0.1,
+        "duration": 1.0
+    }
+}

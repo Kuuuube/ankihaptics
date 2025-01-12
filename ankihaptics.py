@@ -47,8 +47,9 @@ class AnkiHaptics:
             aqt.gui_hooks.profile_will_close.append(self._cleanup)
 
     def _start_websocket_thread(self, config: dict) -> None:
-        self.websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self._start_websocket(config)))
-        self.websocket_thread.start()
+        websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self._start_websocket(config)))
+        websocket_thread.start()
+        self.websocket_thread = websocket_thread
 
     def _cleanup(self) -> None:
         self.keep_websocket_thread_alive = False

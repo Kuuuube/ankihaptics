@@ -16,8 +16,8 @@ def _handle_hooks(mw: aqt.main.AnkiQt, client: buttplug.Client, hook: str) -> No
     devices = client.devices
     for config_device in config["devices"]:
         if config_device[hook]["enabled"]:
-            client_device = [device for device in devices if device.device_name == config_device["device_name"]]
-            if client_device:
+            client_devices = [device for device in devices.values() if device.name == config_device["device_name"]] #should only return one device, but handle as if it can return multiple
+            for client_device in client_devices:
                 print("Activating device. Strength: " + str(config_device[hook]["strength"]) + ", Duration: " + str(config_device[hook]["duration"]) + "s")
                 if len(client_device.actuators) != 0:
                     target_actuators = [client_device.actuators[0]]

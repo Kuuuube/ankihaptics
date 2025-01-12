@@ -156,7 +156,7 @@ class AnkiHaptics:
         #Above Tabs
         devices_horizontal_layout = QHBoxLayout()
         devices_combobox = QComboBox()
-        devices_combobox.addItems([*((x.device_name) for x in self.client.devices)])
+        devices_combobox.addItems([*(x.device_name for x in self.client.devices)])
         devices_combobox.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         devices_horizontal_layout.addWidget(QLabel("Device: "))
         devices_combobox.setCurrentText(default_device_name)

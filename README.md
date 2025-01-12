@@ -22,7 +22,9 @@ Haptics device integration for Anki.
 
     - Restart Anki
 
-4. Start Anki. If Anki was already started, go to `Tools > Anki Haptics Settings` and click `Reconnect`.
+4. Start Anki. If Anki was already started, go to `Tools` > `Anki Haptics Settings` and click `Reconnect`.
+
+5. In `Tools` > `Anki Haptics Settings`, enable your device and configure your settings.
 
 ## Usage
 

@@ -91,8 +91,6 @@ class AnkiHaptics:
         settings_window = QDialog(aqt.mw)
         vertical_layout = QVBoxLayout()
 
-        default_device_name = "*"
-
         def trigger_websocket_reconnect() -> None:
             while self.websocket_thread and self.websocket_thread.is_alive():
                 self.keep_websocket_thread_alive = False
@@ -158,10 +156,11 @@ class AnkiHaptics:
         #Above Tabs
         devices_horizontal_layout = QHBoxLayout()
         devices_combobox = QComboBox()
-        devices_combobox.addItems([*(x.device_name for x in self.client.devices)])
+        device_names = [*(x.name for x in self.client.devices.values())]
+        devices_combobox.addItems(device_names)
         devices_combobox.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         devices_horizontal_layout.addWidget(QLabel("Device: "))
-        devices_combobox.setCurrentText(default_device_name)
+        devices_combobox.setCurrentText(device_names[0])
         def get_device_index(input_config: dict, device_name: str) -> int:
             for i, config_device in enumerate(input_config["devices"]):
                 if config_device["device_name"] == device_name:
@@ -183,7 +182,7 @@ class AnkiHaptics:
         tabs_frame = QTabWidget()
         vertical_layout.addWidget(tabs_frame)
 
-        self._setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, default_device_name))
+        self._setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, device_names[0]))
 
         #Bottom Buttons
         def _set_config_attributes(config: dict, device_index: int) -> dict:

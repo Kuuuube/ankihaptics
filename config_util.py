@@ -4,8 +4,8 @@ import buttplug
 from .config_schemas import config_schema, device_schema
 
 
-def ensure_device_settings(config: dict, devices: list[buttplug.Device]) -> dict:
-    device_names = [*(x.name for x in devices)]
+def ensure_device_settings(config: dict, devices: dict[int, buttplug.Device]) -> dict:
+    device_names = [*(x.name for x in devices.values())]
     config_device_names = [*((x["device_name"]) for x in config["devices"])]
     for device_name in device_names:
         if device_name not in config_device_names:

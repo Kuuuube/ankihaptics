@@ -18,11 +18,9 @@ def _handle_hooks(mw: aqt.main.AnkiQt, client: buttplug.Client, hook: str) -> No
         if config_device[hook]["enabled"]:
             client_devices = [device for device in devices.values() if device.name == config_device["device_name"]] #should only return one device, but handle as if it can return multiple
             for client_device in client_devices:
-                print("Activating device. Strength: " + str(config_device[hook]["strength"]) + ", Duration: " + str(config_device[hook]["duration"]) + "s")
-                if len(client_device.actuators) != 0:
-                    target_actuators = [client_device.actuators[0]]
-                    for target_actuator in target_actuators:
-                        haptics_commands.run_scalar_command(target_actuator, int(config_device[hook]["strength"] * (target_actuator.step_count / 99)), 0, config_device[hook]["duration"])
+                for client_device_actuator in client_device.actuators: #scalar actuators only
+                    print("Activating device actuator. Strength: " + str(config_device[hook]["strength"]) + ", Duration: " + str(config_device[hook]["duration"]) + "s")
+                    haptics_commands.run_scalar_command(client_device_actuator, int(config_device[hook]["strength"] * (client_device_actuator.step_count / 99)), 0, config_device[hook]["duration"])
 
 def _answer_button_press(mw: aqt.main.AnkiQt, client: buttplug.Client, _reviewer: aqt.reviewer.Reviewer, _card: anki.cards.Card, ease: int) -> None:
     button_name = ease_to_button[ease]

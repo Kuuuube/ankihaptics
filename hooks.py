@@ -1,5 +1,3 @@
-import types
-
 import anki
 import aqt
 import buttplug
@@ -14,7 +12,7 @@ ease_to_button = {
 }
 
 def _handle_hooks(mw: aqt.main.AnkiQt, client: buttplug.Client, hook: str) -> None:
-    config = config_util.ensure_device_settings(types.SimpleNamespace(**config_util.get_config(mw)), client.devices)
+    config = config_util.ensure_device_settings(config_util.get_config(mw), client.devices)
     devices = client.devices
     for config_device in config["devices"]:
         if config_device[hook]["enabled"]:

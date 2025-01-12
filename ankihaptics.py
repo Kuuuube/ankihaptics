@@ -162,7 +162,7 @@ class AnkiHaptics:
         devices_horizontal_layout.addWidget(QLabel("Device: "))
         devices_combobox.setCurrentText(default_device_name)
         def get_device_index(config: dict, device_name: str) -> int:
-            config = config_util.ensure_device_settings(config, self.client.devices)
+            config = config_util.ensure_device_settings(config_util.get_config(aqt.mw), self.client.devices)
             for i, config_device in enumerate(config.devices):
                 if config_device["device_name"] == device_name:
                     return i

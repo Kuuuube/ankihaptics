@@ -1,5 +1,5 @@
 import asyncio
-from collections.abc import Callable
+import collections.abc
 
 
 def try_parse_float(input_string: str) -> float:
@@ -9,5 +9,5 @@ def try_parse_float(input_string: str) -> float:
         return None
 
 #Allows running an async function on a thread
-def start_async(function: Callable) -> None:
+def start_async(function: collections.abc.Callable) -> None:
     asyncio.run(function())

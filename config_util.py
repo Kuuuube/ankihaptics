@@ -1,6 +1,6 @@
 import types
 
-from aqt import main
+import aqt
 
 from .config_schemas import config_schema, device_schema
 
@@ -13,14 +13,14 @@ def ensure_device_settings(config: dict, devices: dict) -> dict:
             config.devices.append({"device_name": device_name})
     return validate_config(config)
 
-def set_config(mw: main.AnkiQt, namespace_config: types.SimpleNamespace) -> None:
+def set_config(mw: aqt.main.AnkiQt, namespace_config: types.SimpleNamespace) -> None:
     config = dict(namespace_config.__dict__)
     for key in list(config.keys()):
         if key not in config_schema:
             del config[key]
     mw.addonManager.writeConfig(__name__, config)
 
-def get_config(mw: main.AnkiQt) -> dict:
+def get_config(mw: aqt.main.AnkiQt) -> dict:
     config = mw.addonManager.getConfig(__name__)
 
     if config_schema["version"]["default"] > config["version"]:
@@ -29,7 +29,7 @@ def get_config(mw: main.AnkiQt) -> dict:
 
     return validate_config(config)
 
-def reset_config(mw: main.AnkiQt) -> None:
+def reset_config(mw: aqt.main.AnkiQt) -> None:
     default_config = {item[0]: item[1]["default"] for item in config_schema.items()}
     mw.addonManager.writeConfig(__name__, default_config)
 

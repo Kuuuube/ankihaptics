@@ -4,7 +4,7 @@ import threading
 import time
 import types
 
-from aqt import gui_hooks, main, mw
+import aqt
 from aqt.qt import (
     QAction,
     QCheckBox,
@@ -29,7 +29,7 @@ from . import config_util, hooks, util
 
 
 class AnkiHaptics:
-    def __init__(self, mw: main.AnkiQt) -> None:
+    def __init__(self, mw: aqt.main.AnkiQt) -> None:
         if mw:
             config = types.SimpleNamespace(**config_util.get_config(mw))
 
@@ -45,7 +45,7 @@ class AnkiHaptics:
             self._start_websocket_thread(config)
 
             #Prevent Anki from hanging forever due to infinitely running thread
-            gui_hooks.profile_will_close.append(self._cleanup)
+            aqt.gui_hooks.profile_will_close.append(self._cleanup)
 
     def _start_websocket_thread(self, config: dict) -> None:
         self.websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self._start_websocket(config)))
@@ -68,7 +68,7 @@ class AnkiHaptics:
 
         self.client.logger.info("Devices: " + str(self.client.devices))
 
-        hooks.register_hooks(mw, self.client)
+        hooks.register_hooks(aqt.mw, self.client)
 
         currently_scanning = False
         while self.keep_websocket_thread_alive:
@@ -85,7 +85,7 @@ class AnkiHaptics:
         self.websocket_status = "DISCONNECTED"
 
     def _setup_settings_window(self, config: dict) -> None:
-        settings_window = QDialog(mw)
+        settings_window = QDialog(aqt.mw)
         vertical_layout = QVBoxLayout()
 
         default_device_name = "*"
@@ -188,40 +188,40 @@ class AnkiHaptics:
         def _set_config_attributes(config: dict, device_index: int) -> dict:
             config.devices[device_index] = {
                 "device_name": config.devices[device_index]["device_name"],
-                "enabled_by_default": mw.findChild(QCheckBox, "ankihaptics_device_enabled").isChecked(),
-                "enabled_pattern": mw.findChild(QLineEdit, "ankihaptics_device_enabled_pattern").text(),
+                "enabled_by_default": aqt.mw.findChild(QCheckBox, "ankihaptics_device_enabled").isChecked(),
+                "enabled_pattern": aqt.mw.findChild(QLineEdit, "ankihaptics_device_enabled_pattern").text(),
                 "again": {
-                    "enabled": mw.findChild(QGroupBox, "ankihaptics_again_box").isChecked(),
-                    "strength": round(mw.findChild(QSlider, "ankihaptics_again_strength").value() / 99, 2),
-                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_again_duration").text()),
+                    "enabled": aqt.mw.findChild(QGroupBox, "ankihaptics_again_box").isChecked(),
+                    "strength": round(aqt.mw.findChild(QSlider, "ankihaptics_again_strength").value() / 99, 2),
+                    "duration": util.try_parse_float(aqt.mw.findChild(QLineEdit, "ankihaptics_again_duration").text()),
                 },
                 "hard": {
-                    "enabled": mw.findChild(QGroupBox, "ankihaptics_hard_box").isChecked(),
-                    "strength": round(mw.findChild(QSlider, "ankihaptics_hard_strength").value() / 99, 2),
-                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_hard_duration").text()),
+                    "enabled": aqt.mw.findChild(QGroupBox, "ankihaptics_hard_box").isChecked(),
+                    "strength": round(aqt.mw.findChild(QSlider, "ankihaptics_hard_strength").value() / 99, 2),
+                    "duration": util.try_parse_float(aqt.mw.findChild(QLineEdit, "ankihaptics_hard_duration").text()),
                 },
                 "good": {
-                    "enabled": mw.findChild(QGroupBox, "ankihaptics_good_box").isChecked(),
-                    "strength": round(mw.findChild(QSlider, "ankihaptics_good_strength").value() / 99, 2),
-                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_good_duration").text()),
+                    "enabled": aqt.mw.findChild(QGroupBox, "ankihaptics_good_box").isChecked(),
+                    "strength": round(aqt.mw.findChild(QSlider, "ankihaptics_good_strength").value() / 99, 2),
+                    "duration": util.try_parse_float(aqt.mw.findChild(QLineEdit, "ankihaptics_good_duration").text()),
                 },
                 "easy": {
-                    "enabled": mw.findChild(QGroupBox, "ankihaptics_easy_box").isChecked(),
-                    "strength": round(mw.findChild(QSlider, "ankihaptics_easy_strength").value() / 99, 2),
-                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_easy_duration").text()),
+                    "enabled": aqt.mw.findChild(QGroupBox, "ankihaptics_easy_box").isChecked(),
+                    "strength": round(aqt.mw.findChild(QSlider, "ankihaptics_easy_strength").value() / 99, 2),
+                    "duration": util.try_parse_float(aqt.mw.findChild(QLineEdit, "ankihaptics_easy_duration").text()),
                 },
                 "show_question": {
-                    "enabled": mw.findChild(QGroupBox, "ankihaptics_show_question_box").isChecked(),
-                    "strength": round(mw.findChild(QSlider, "ankihaptics_show_question_strength").value() / 99, 2),
-                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_show_question_duration").text()),
+                    "enabled": aqt.mw.findChild(QGroupBox, "ankihaptics_show_question_box").isChecked(),
+                    "strength": round(aqt.mw.findChild(QSlider, "ankihaptics_show_question_strength").value() / 99, 2),
+                    "duration": util.try_parse_float(aqt.mw.findChild(QLineEdit, "ankihaptics_show_question_duration").text()),
                 },
                 "show_answer": {
-                    "enabled": mw.findChild(QGroupBox, "ankihaptics_show_answer_box").isChecked(),
-                    "strength": round(mw.findChild(QSlider, "ankihaptics_show_answer_strength").value() / 99, 2),
-                    "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_show_answer_duration").text()),
+                    "enabled": aqt.mw.findChild(QGroupBox, "ankihaptics_show_answer_box").isChecked(),
+                    "strength": round(aqt.mw.findChild(QSlider, "ankihaptics_show_answer_strength").value() / 99, 2),
+                    "duration": util.try_parse_float(aqt.mw.findChild(QLineEdit, "ankihaptics_show_answer_duration").text()),
                 },
             }
-            config_util.set_config(mw, config)
+            config_util.set_config(aqt.mw, config)
             return config
 
         bottom_buttons_horizontal_layout = QHBoxLayout()

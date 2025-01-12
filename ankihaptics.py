@@ -107,7 +107,7 @@ class AnkiHaptics:
             settings_window.close()
             self._setup_settings_window(config)
 
-        if self.websocket_status != "OK":
+        if self.websocket_status != "OK" or not self.client:
             vertical_layout.addWidget(QLabel("Failed to connect to websocket. Status code: " + self.websocket_status))
             reconnect_button = QPushButton("Reconnect", clicked = trigger_websocket_reconnect)
             vertical_layout.addWidget(reconnect_button)

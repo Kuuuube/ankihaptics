@@ -1,24 +1,39 @@
-import types
 import asyncio
 import logging
 import threading
 import time
+import types
 
-from aqt import mw, gui_hooks
-from aqt.qt import (Qt, QAction, QDialog, QVBoxLayout, QHBoxLayout,
-                    QComboBox, QSizePolicy, QLabel, QTabWidget, QWidget,
-                    QScrollArea, QPushButton, QCheckBox, QSlider, QLineEdit,
-                    QGroupBox)
-from buttplug import Client, WebsocketConnector, ProtocolSpec
+from aqt import gui_hooks, main, mw
+from aqt.qt import (
+    QAction,
+    QCheckBox,
+    QComboBox,
+    QDialog,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QScrollArea,
+    QSizePolicy,
+    QSlider,
+    Qt,
+    QTabWidget,
+    QVBoxLayout,
+    QWidget,
+)
+from buttplug import Client, ProtocolSpec, WebsocketConnector
 
-from . import hooks, config_util, util
+from . import config_util, hooks, util
+
 
 class AnkiHaptics:
-    def __init__(self, mw):
+    def __init__(self, mw: main.AnkiQt) -> None:
         if mw:
             config = types.SimpleNamespace(**config_util.get_config(mw))
 
-            self.menuAction = QAction("Anki Haptics Settings", mw, triggered = lambda: self.setup_settings_window(config))
+            self.menuAction = QAction("Anki Haptics Settings", mw, triggered = lambda: self._setup_settings_window(config))
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
 
@@ -27,19 +42,19 @@ class AnkiHaptics:
             self.websocket_command = ""
             self.websocket_status = ""
             self.websocket_thread = None
-            self.start_websocket_thread(config)
+            self._start_websocket_thread(config)
 
             #Prevent Anki from hanging forever due to infinitely running thread
-            gui_hooks.profile_will_close.append(self.cleanup)
+            gui_hooks.profile_will_close.append(self._cleanup)
 
-    def start_websocket_thread(self, config):
-        self.websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self.start_websocket(config)))
+    def _start_websocket_thread(self, config: dict) -> None:
+        self.websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self._start_websocket(config)))
         self.websocket_thread.start()
 
-    def cleanup(self):
+    def _cleanup(self) -> None:
         self.keep_websocket_thread_alive = False
 
-    async def start_websocket(self, config):
+    async def _start_websocket(self, config: dict) -> None:
         self.client = Client("Anki Haptics Client", ProtocolSpec.v3)
         connector = WebsocketConnector(config.websocket_path, logger = self.client.logger)
 
@@ -48,10 +63,10 @@ class AnkiHaptics:
             self.websocket_status = "OK"
         except Exception as e:
             self.websocket_status = "ERROR\n" + str(e)
-            logging.error(f"Could not connect to server, exiting: {e}")
+            logging.exception("Could not connect to server, exiting")
             return
 
-        self.client.logger.info(f"Devices: {self.client.devices}")
+        self.client.logger.info("Devices: " + str(self.client.devices))
 
         hooks.register_hooks(mw, self.client)
 
@@ -68,22 +83,22 @@ class AnkiHaptics:
 
         await self.client.disconnect()
         self.websocket_status = "DISCONNECTED"
-    
-    def setup_settings_window(self, config):
+
+    def _setup_settings_window(self, config: dict) -> None:
         settings_window = QDialog(mw)
         vertical_layout = QVBoxLayout()
 
         default_device_name = "*"
 
-        def trigger_websocket_reconnect():
+        def trigger_websocket_reconnect() -> None:
             while self.websocket_thread and self.websocket_thread.is_alive():
                 self.keep_websocket_thread_alive = False
                 time.sleep(config.websocket_polling_delay * 2) #block main thread to give time for other thread to die before spawning another
             self.keep_websocket_thread_alive = True
-            self.start_websocket_thread(config)
+            self._start_websocket_thread(config)
             time.sleep(config.reconnect_delay) #block main thread to give time for other thread to connect before resetting the window
             settings_window.close()
-            self.setup_settings_window(config)
+            self._setup_settings_window(config)
 
         if self.websocket_status != "OK":
             vertical_layout.addWidget(QLabel("Failed to connect to websocket. Status code: " + self.websocket_status))
@@ -99,7 +114,7 @@ class AnkiHaptics:
 
         if len(self.client.devices) <= 0:
             vertical_layout.addWidget(QLabel("No devices found. Websocket status code: " + self.websocket_status))
-            def trigger_device_scanning():
+            def trigger_device_scanning() -> None:
                 if self.websocket_command != "start_scanning":
                     scan_button.setText("Stop Scanning for Devices")
                     self.websocket_command = "start_scanning"
@@ -110,9 +125,9 @@ class AnkiHaptics:
             vertical_layout.addWidget(scan_button)
             reconnect_button = QPushButton("Reconnect", clicked = trigger_websocket_reconnect)
             vertical_layout.addWidget(reconnect_button)
-            def trigger_refresh():
+            def trigger_refresh() -> None:
                 settings_window.close()
-                self.setup_settings_window(config)
+                self._setup_settings_window(config)
             refresh_button = QPushButton("Refresh", clicked = trigger_refresh)
             vertical_layout.addWidget(refresh_button)
             settings_window.setLayout(vertical_layout)
@@ -124,7 +139,7 @@ class AnkiHaptics:
         #Top buttons
         top_buttons_horizontal_layout = QHBoxLayout()
         vertical_layout.addLayout(top_buttons_horizontal_layout)
-        def trigger_device_scanning():
+        def trigger_device_scanning() -> None:
             if self.websocket_command != "start_scanning":
                 scan_button.setText("Stop Scanning for Devices")
                 self.websocket_command = "start_scanning"
@@ -133,9 +148,9 @@ class AnkiHaptics:
                 self.websocket_command = "stop_scanning"
         scan_button = QPushButton(scan_button_text, clicked = trigger_device_scanning)
         top_buttons_horizontal_layout.addWidget(scan_button)
-        def trigger_refresh():
+        def trigger_refresh() -> None:
             settings_window.close()
-            self.setup_settings_window(config)
+            self._setup_settings_window(config)
         refresh_button = QPushButton("Refresh", clicked = trigger_refresh)
         top_buttons_horizontal_layout.addWidget(refresh_button)
 
@@ -146,18 +161,18 @@ class AnkiHaptics:
         devices_combobox.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         devices_horizontal_layout.addWidget(QLabel("Device: "))
         devices_combobox.setCurrentText(default_device_name)
-        def get_device_index(config, device_name):
+        def get_device_index(config: dict, device_name: str) -> int:
             config = config_util.ensure_device_settings(config, self.client.devices)
             for i, config_device in enumerate(config.devices):
                 if config_device["device_name"] == device_name:
                     return i
             return 0
-        def update_vertical_layout_tabs(device_name):
+        def update_vertical_layout_tabs(device_name: str) -> None:
             current_tab = tabs_frame.currentIndex()
             tab_count = tabs_frame.count()
             for tab_index in reversed(range(tab_count)):
                 tabs_frame.widget(tab_index).deleteLater()
-            self.setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, device_name))
+            self._setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, device_name))
             tabs_frame.setCurrentIndex(current_tab)
         devices_combobox.currentTextChanged.connect(update_vertical_layout_tabs)
 
@@ -167,10 +182,10 @@ class AnkiHaptics:
         tabs_frame = QTabWidget()
         vertical_layout.addWidget(tabs_frame)
 
-        self.setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, default_device_name))
+        self._setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, default_device_name))
 
         #Bottom Buttons
-        def set_config_attributes(config, device_index, write_to_anki = False):
+        def _set_config_attributes(config: dict, device_index: int) -> dict:
             config.devices[device_index] = {
                 "device_name": config.devices[device_index]["device_name"],
                 "enabled_by_default": mw.findChild(QCheckBox, "ankihaptics_device_enabled").isChecked(),
@@ -204,15 +219,14 @@ class AnkiHaptics:
                     "enabled": mw.findChild(QGroupBox, "ankihaptics_show_answer_box").isChecked(),
                     "strength": round(mw.findChild(QSlider, "ankihaptics_show_answer_strength").value() / 99, 2),
                     "duration": util.try_parse_float(mw.findChild(QLineEdit, "ankihaptics_show_answer_duration").text()),
-                }
+                },
             }
-            if write_to_anki:
-                config_util.set_config(mw, config)
+            config_util.set_config(mw, config)
             return config
 
         bottom_buttons_horizontal_layout = QHBoxLayout()
         vertical_layout.addLayout(bottom_buttons_horizontal_layout)
-        generate_button = QPushButton("Save", clicked = lambda _: set_config_attributes(config, get_device_index(config, devices_combobox.currentText()), write_to_anki = True))
+        generate_button = QPushButton("Save", clicked = lambda _: _set_config_attributes(config, get_device_index(config, devices_combobox.currentText())))
         bottom_buttons_horizontal_layout.addWidget(generate_button)
         close_button = QPushButton("Close", clicked = settings_window.reject)
         bottom_buttons_horizontal_layout.addWidget(close_button)
@@ -223,7 +237,7 @@ class AnkiHaptics:
             settings_window.show()
 
 
-    def setup_vertical_layout_tabs(self, config, tabs_frame, device_index):
+    def _setup_vertical_layout_tabs(self, config: dict, tabs_frame: QTabWidget, device_index: int) -> None:
         #General Tab
         general_tab = QWidget()
         general_tab_scroll_area = QScrollArea()

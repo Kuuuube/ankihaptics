@@ -25,6 +25,16 @@ Show answer
 
 All actions can be configured individually in settings.
 
+## Troubleshooting
+
+### Scanning can't find device
+
+Sometimes, requesting to scan for a device through Anki Haptics doesn't work.
+
+Connect your device through scanning in Intiface directly instead and Anki Haptics will find it without needing to scan.
+
+(You may need to restart Intiface if it has already failed once through Anki Haptics)
+
 ## Development
 
 Run `setup.sh` to generate the `lib` folder with dependencies and set up venv.

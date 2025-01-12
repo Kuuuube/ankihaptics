@@ -103,6 +103,10 @@ class AnkiHaptics:
             settings_window.close()
             self._setup_settings_window(config)
 
+        def trigger_refresh() -> None:
+            settings_window.close()
+            self._setup_settings_window(config)
+
         if self.websocket_status != "OK":
             vertical_layout.addWidget(QLabel("Failed to connect to websocket. Status code: " + self.websocket_status))
             reconnect_button = QPushButton("Reconnect", clicked = trigger_websocket_reconnect)
@@ -128,9 +132,6 @@ class AnkiHaptics:
             vertical_layout.addWidget(scan_button)
             reconnect_button = QPushButton("Reconnect", clicked = trigger_websocket_reconnect)
             vertical_layout.addWidget(reconnect_button)
-            def trigger_refresh() -> None:
-                settings_window.close()
-                self._setup_settings_window(config)
             refresh_button = QPushButton("Refresh", clicked = trigger_refresh)
             vertical_layout.addWidget(refresh_button)
             settings_window.setLayout(vertical_layout)
@@ -151,9 +152,6 @@ class AnkiHaptics:
                 self.websocket_command = "stop_scanning"
         scan_button = QPushButton(scan_button_text, clicked = trigger_device_scanning)
         top_buttons_horizontal_layout.addWidget(scan_button)
-        def trigger_refresh() -> None:
-            settings_window.close()
-            self._setup_settings_window(config)
         refresh_button = QPushButton("Refresh", clicked = trigger_refresh)
         top_buttons_horizontal_layout.addWidget(refresh_button)
 

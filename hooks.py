@@ -1,5 +1,5 @@
 import anki
-import aqt
+import aqt.reviewer
 import buttplug
 
 from . import config_util, haptics_commands

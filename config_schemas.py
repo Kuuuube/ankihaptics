@@ -8,7 +8,7 @@ config_schema = {
     "reconnect_delay": {
         "default": 1,
     },
-    "websocket_polling_delay": {
+    "websocket_polling_delay_ms": {
         "default": 1,
     },
     "devices": {

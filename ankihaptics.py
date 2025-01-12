@@ -39,7 +39,7 @@ class AnkiHaptics:
             self.client = None
             self.keep_websocket_thread_alive = True
             self.websocket_command = ""
-            self.websocket_status = ""
+            self.websocket_status = "NOT_STARTED"
             self.websocket_thread = None
             self._start_websocket_thread(config)
 
@@ -56,6 +56,7 @@ class AnkiHaptics:
 
     async def _start_websocket(self, config: dict) -> None:
         self.client = Client("Anki Haptics Client", ProtocolSpec.v3)
+        self.websocket_status = "STARTING"
         connector = WebsocketConnector(config["websocket_path"], logger = self.client.logger)
 
         try:

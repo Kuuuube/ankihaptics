@@ -84,7 +84,8 @@ class AnkiHaptics:
         self.websocket_status = "DISCONNECTED"
 
     def _setup_settings_window(self, config: dict) -> None:
-        config = config_util.ensure_device_settings(config, self.client.devices)
+        if self.client:
+            config = config_util.ensure_device_settings(config, self.client.devices)
         settings_window = QDialog(aqt.mw)
         vertical_layout = QVBoxLayout()
 

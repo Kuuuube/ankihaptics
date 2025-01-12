@@ -2,7 +2,7 @@ import anki
 import aqt.reviewer
 import buttplug
 
-from . import config_util, haptics_commands
+from . import config_util
 
 ease_to_button = {
     1: "again",

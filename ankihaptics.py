@@ -83,7 +83,8 @@ class AnkiHaptics:
                 for device in self.websocket_command["args"]["devices"]:
                     for actuator in device["actuators"]:
                         await actuator.command(device["strength"])
-                    await asyncio.sleep(device["duration"])
+                await asyncio.sleep(self.websocket_command["args"]["duration"])
+                for device in self.websocket_command["args"]["devices"]:
                     for actuator in device["actuators"]:
                         await actuator.command(0.0)
 
@@ -201,33 +202,35 @@ class AnkiHaptics:
                 "again": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_again_box").isChecked(),
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_again_strength").value() / 99, 2),
-                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_again_duration").text(), 0.0),
                 },
                 "hard": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_hard_box").isChecked(),
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_hard_strength").value() / 99, 2),
-                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_hard_duration").text(), 0.0),
                 },
                 "good": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_good_box").isChecked(),
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_good_strength").value() / 99, 2),
-                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_good_duration").text(), 0.0),
                 },
                 "easy": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_easy_box").isChecked(),
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_easy_strength").value() / 99, 2),
-                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_easy_duration").text(), 0.0),
                 },
                 "show_question": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_show_question_box").isChecked(),
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_show_question_strength").value() / 99, 2),
-                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_show_question_duration").text(), 0.0),
                 },
                 "show_answer": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_show_answer_box").isChecked(),
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_show_answer_strength").value() / 99, 2),
-                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_show_answer_duration").text(), 0.0),
                 },
+            }
+            config["duration"] = {
+                "again": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_again_duration").text(), 0.0),
+                "hard": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_hard_duration").text(), 0.0),
+                "good": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_good_duration").text(), 0.0),
+                "easy": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_easy_duration").text(), 0.0),
+                "show_question": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_show_question_duration").text(), 0.0),
+                "show_answer": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_show_answer_duration").text(), 0.0),
             }
             config_util.set_config(aqt.mw, config)
             return config
@@ -306,26 +309,37 @@ class AnkiHaptics:
             anki_action_strength_box.addWidget(anki_action_strength)
             anki_action_box_layout.addLayout(anki_action_strength_box)
 
-            anki_action_duration_box = QHBoxLayout()
-            anki_action_duration_box.addWidget(QLabel("Duration"))
-            anki_action_duration = QLineEdit()
-            anki_action_duration.setText(str(config["devices"][device_index][anki_action_setting["config_name"]]["duration"]))
-            anki_action_duration.setObjectName("ankihaptics_" + anki_action_setting["config_name"] + "_duration")
-            anki_action_duration_box.addWidget(anki_action_duration)
-            anki_action_duration_box.addWidget(QLabel("seconds"))
-            anki_action_box_layout.addLayout(anki_action_duration_box)
-
             anki_action_box.setLayout(anki_action_box_layout)
             anki_actions_tab_vertical_layout.addWidget(anki_action_box)
 
 
-        #Advanced Tab
-        advanced_tab = QWidget()
-        advanced_tab_scroll_area = QScrollArea()
-        advanced_tab_scroll_area.setWidgetResizable(True)
-        advanced_tab_vertical_layout = QVBoxLayout()
-        advanced_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        #Duration Tab
+        duration_tab = QWidget()
+        duration_tab_scroll_area = QScrollArea()
+        duration_tab_scroll_area.setWidgetResizable(True)
+        duration_tab_vertical_layout = QVBoxLayout()
+        duration_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        advanced_tab.setLayout(advanced_tab_vertical_layout)
-        advanced_tab_scroll_area.setWidget(advanced_tab)
-        tabs_frame.addTab(advanced_tab_scroll_area, "Advanced")
+        anki_action_durations_settings = [
+            {"display_name": "Again Button", "config_name": "again"},
+            {"display_name": "Hard Button", "config_name": "hard"},
+            {"display_name": "Good Button", "config_name": "good"},
+            {"display_name": "Easy Button", "config_name": "easy"},
+            {"display_name": "Show Question", "config_name": "show_question"},
+            {"display_name": "Show Answer", "config_name": "show_answer"},
+        ]
+
+        for anki_action_duration_setting in anki_action_durations_settings:
+            anki_action_duration_box = QHBoxLayout()
+            anki_action_duration_box.addWidget(QLabel(anki_action_duration_setting["display_name"]))
+            anki_action_duration = QLineEdit()
+            anki_action_duration.setText(str(config["duration"][anki_action_duration_setting["config_name"]]))
+            anki_action_duration.setObjectName("ankihaptics_" + anki_action_duration_setting["config_name"] + "_duration")
+            anki_action_duration_box.addWidget(anki_action_duration)
+            anki_action_duration_box.addWidget(QLabel("seconds"))
+
+            duration_tab_vertical_layout.addLayout(anki_action_duration_box)
+
+        duration_tab.setLayout(duration_tab_vertical_layout)
+        duration_tab_scroll_area.setWidget(duration_tab)
+        tabs_frame.addTab(duration_tab_scroll_area, "Duration")

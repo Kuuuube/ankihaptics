@@ -3,5 +3,13 @@
     "websocket_path": "ws://127.0.0.1:12345",
     "reconnect_delay": 1,
     "websocket_polling_delay_ms": 1,
+    "duration": {
+        "again": 1.0,
+        "hard": 1.0,
+        "good": 1.0,
+        "easy": 1.0,
+        "show_question": 1.0,
+        "show_answer": 1.0
+    },
     "devices": []
 }

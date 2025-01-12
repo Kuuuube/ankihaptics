@@ -18,7 +18,8 @@ def _handle_hooks(mw: aqt.main.AnkiQt, ankihaptics_ref, hook: str) -> None:
     for config_device in config["devices"]:
         if config_device["enabled"] and config_device[hook]["enabled"]:
             client_device: buttplug.Device = [device for device in devices.values() if device.name == config_device["device_name"]][0] #should only return one device
-            websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": client_device.actuators, "strength": config_device[hook]["strength"], "duration": config_device[hook]["duration"]})
+            websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": client_device.actuators, "strength": config_device[hook]["strength"]})
+            websocket_command["args"]["duration"] = config["duration"][hook]
             ankihaptics_ref.websocket_command = websocket_command
 
 def _answer_button_press(mw: aqt.main.AnkiQt, ankihaptics_ref, _reviewer: aqt.reviewer.Reviewer, _card: anki.cards.Card, ease: int) -> None:

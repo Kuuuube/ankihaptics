@@ -80,7 +80,7 @@ class AnkiHaptics:
                 await self.client.stop_scanning()
                 currently_scanning = False
 
-            await asyncio.sleep(config["websocket_polling_delay"])
+            await asyncio.sleep(config["websocket_polling_delay_ms"] / 1000)
 
         await self.client.disconnect()
         self.websocket_status = "DISCONNECTED"
@@ -94,7 +94,12 @@ class AnkiHaptics:
         def trigger_websocket_reconnect() -> None:
             while self.websocket_thread and self.websocket_thread.is_alive():
                 self.keep_websocket_thread_alive = False
-                time.sleep(config["websocket_polling_delay"] * 2) #block main thread to give time for other thread to die before spawning another
+                #block main thread to give time for other thread to die before spawning another
+                one_second = 1000
+                if config["websocket_polling_delay_ms"] <= one_second:
+                    time.sleep(one_second * 2)
+                else:
+                    time.sleep(config["websocket_polling_delay_ms"] / one_second * 2)
             self.keep_websocket_thread_alive = True
             self._start_websocket_thread(config)
             time.sleep(config["reconnect_delay"]) #block main thread to give time for other thread to connect before resetting the window

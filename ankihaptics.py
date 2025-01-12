@@ -38,9 +38,10 @@ class AnkiHaptics:
 
             self.client = None
             self.keep_websocket_thread_alive = True
-            self.websocket_command = {"command": None}
+            self.websocket_command_queue = []
             self.websocket_status = "NOT_STARTED"
             self.websocket_thread = None
+            self.currently_scanning = False
             self._start_websocket_thread(config)
 
             #Prevent Anki from hanging forever due to infinitely running thread
@@ -71,24 +72,23 @@ class AnkiHaptics:
 
         hooks.register_hooks(aqt.mw, self)
 
-        currently_scanning = False
         while self.keep_websocket_thread_alive:
-            if self.websocket_command["command"] == "start_scanning" and not currently_scanning:
-                await self.client.start_scanning()
-                currently_scanning = True
-            elif self.websocket_command["command"] == "stop_scanning" and currently_scanning:
-                await self.client.stop_scanning()
-                currently_scanning = False
-            elif self.websocket_command["command"] == "scalar_cmd":
-                for device in self.websocket_command["args"]["devices"]:
-                    for actuator in device["actuators"]:
-                        await actuator.command(device["strength"])
-                await asyncio.sleep(self.websocket_command["args"]["duration"])
-                for device in self.websocket_command["args"]["devices"]:
-                    for actuator in device["actuators"]:
-                        await actuator.command(0.0)
-
-                self.websocket_command["command"] = None
+            while len(self.websocket_command_queue) > 0:
+                websocket_command = self.websocket_command_queue.pop(0)
+                if websocket_command["command"] == "start_scanning" and not self.currently_scanning:
+                    await self.client.start_scanning()
+                    self.currently_scanning = True
+                elif websocket_command["command"] == "stop_scanning" and self.currently_scanning:
+                    await self.client.stop_scanning()
+                    self.currently_scanning = False
+                elif websocket_command["command"] == "scalar_cmd":
+                    for device in websocket_command["args"]["devices"]:
+                        for actuator in device["actuators"]:
+                            await actuator.command(device["strength"])
+                    await asyncio.sleep(websocket_command["args"]["duration"])
+                    for device in websocket_command["args"]["devices"]:
+                        for actuator in device["actuators"]:
+                            await actuator.command(0.0)
 
             await asyncio.sleep(config["websocket_polling_delay_ms"] / 1000)
 
@@ -121,12 +121,12 @@ class AnkiHaptics:
             self._setup_settings_window(config)
 
         def trigger_device_scanning() -> None:
-            if self.websocket_command["command"] != "start_scanning":
+            if not self.currently_scanning:
                 scan_button.setText("Stop Scanning for Devices")
-                self.websocket_command["command"] = "start_scanning"
-            elif self.websocket_command["command"] == "start_scanning":
+                self.websocket_command_queue.append({"command": "start_scanning"})
+            else:
                 scan_button.setText("Scan for Devices")
-                self.websocket_command["command"] = "stop_scanning"
+                self.websocket_command_queue.append({"command": "stop_scanning"})
 
         if self.websocket_status != "OK" or not self.client:
             vertical_layout.addWidget(QLabel("Failed to connect to websocket. Status code: " + self.websocket_status))
@@ -138,7 +138,7 @@ class AnkiHaptics:
                 settings_window.show()
             return
 
-        scan_button_text = "Scan for Devices" if self.websocket_command["command"] != "start_scanning" else "Stop Scanning for Devices"
+        scan_button_text = "Scan for Devices" if not self.currently_scanning else "Stop Scanning for Devices"
 
         if len(self.client.devices) <= 0:
             vertical_layout.addWidget(QLabel("No devices found. Websocket status code: " + self.websocket_status))

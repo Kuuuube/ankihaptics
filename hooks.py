@@ -17,12 +17,12 @@ def _handle_hooks(mw: aqt.main.AnkiQt, ankihaptics_ref, hook: str, card: anki.ca
     for config_device in config["devices"]:
         if not config_device["enabled"] or not config_device[hook]["enabled"]:
             continue
-        if not config_device["enabled_pattern"] == "*" and card.id not in mw.col.find_cards(config_device["enabled_pattern"]):
+        if config_device["enabled_pattern"] != "*" and card.id not in mw.col.find_cards(config_device["enabled_pattern"]):
             continue
         client_device = [device for device in devices.values() if device.name == config_device["device_name"]][0] #should only return one device
         websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": client_device.actuators, "strength": config_device[hook]["strength"]})
         websocket_command["args"]["duration"] = config["duration"][hook]
-        ankihaptics_ref.websocket_command = websocket_command
+        ankihaptics_ref.websocket_command_queue.append(websocket_command)
 
 def _answer_button_press(mw: aqt.main.AnkiQt, ankihaptics_ref, _reviewer: aqt.reviewer.Reviewer, card: anki.cards.Card, ease: int) -> None:  # noqa: ANN001
     button_name = ease_to_button[ease]

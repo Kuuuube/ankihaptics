@@ -92,7 +92,7 @@ device_schema = {
     "device_name": {
         "default": "",
     },
-    "enabled_by_default": {
+    "enabled": {
         "default": False,
     },
     "enabled_pattern": {

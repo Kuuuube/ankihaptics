@@ -1,6 +1,6 @@
 {
     "device_name": "*",
-    "enabled_by_default": false,
+    "enabled": false,
     "enabled_pattern": "*",
     "again": {
         "enabled": false,

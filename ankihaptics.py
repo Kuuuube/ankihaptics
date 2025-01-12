@@ -187,7 +187,7 @@ class AnkiHaptics:
         def _set_config_attributes(config: dict, device_index: int) -> dict:
             config["devices"][device_index] = {
                 "device_name": config["devices"][device_index]["device_name"],
-                "enabled_by_default": aqt.mw.findChild(QCheckBox, "ankihaptics_device_enabled").isChecked(),
+                "enabled": aqt.mw.findChild(QCheckBox, "ankihaptics_device_enabled").isChecked(),
                 "enabled_pattern": aqt.mw.findChild(QLineEdit, "ankihaptics_device_enabled_pattern").text(),
                 "again": {
                     "enabled": aqt.mw.findChild(QGroupBox, "ankihaptics_again_box").isChecked(),
@@ -250,7 +250,7 @@ class AnkiHaptics:
 
         device_enabled = QCheckBox("Device Enabled")
         device_enabled.setObjectName("ankihaptics_device_enabled")
-        device_enabled.setChecked(config["devices"][device_index]["enabled_by_default"])
+        device_enabled.setChecked(config["devices"][device_index]["enabled"])
         general_tab_vertical_layout.addWidget(device_enabled)
 
         device_enabled_pattern_box = QHBoxLayout()

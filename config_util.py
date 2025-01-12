@@ -1,5 +1,3 @@
-import types
-
 import aqt
 
 from .config_schemas import config_schema, device_schema
@@ -13,8 +11,7 @@ def ensure_device_settings(config: dict, devices: dict) -> dict:
             config["devices"].append({"device_name": device_name})
     return validate_config(config)
 
-def set_config(mw: aqt.main.AnkiQt, namespace_config: types.SimpleNamespace) -> None:
-    config = dict(namespace_config.__dict__)
+def set_config(mw: aqt.main.AnkiQt, config: dict) -> None:
     for key in list(config.keys()):
         if key not in config_schema:
             del config[key]

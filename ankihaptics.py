@@ -2,7 +2,6 @@ import asyncio
 import logging
 import threading
 import time
-import types
 
 import aqt
 from aqt.qt import (
@@ -31,7 +30,7 @@ from . import config_util, hooks, util
 class AnkiHaptics:
     def __init__(self, mw: aqt.main.AnkiQt) -> None:
         if mw:
-            config = types.SimpleNamespace(**config_util.get_config(mw))
+            config = config_util.get_config(mw)
 
             self.menuAction = QAction("Anki Haptics Settings", mw, triggered = lambda: self._setup_settings_window(config))
             mw.form.menuTools.addSeparator()
@@ -56,7 +55,7 @@ class AnkiHaptics:
 
     async def _start_websocket(self, config: dict) -> None:
         self.client = Client("Anki Haptics Client", ProtocolSpec.v3)
-        connector = WebsocketConnector(config.websocket_path, logger = self.client.logger)
+        connector = WebsocketConnector(config["websocket_path"], logger = self.client.logger)
 
         try:
             await self.client.connect(connector)
@@ -79,7 +78,7 @@ class AnkiHaptics:
                 await self.client.stop_scanning()
                 currently_scanning = False
 
-            await asyncio.sleep(config.websocket_polling_delay)
+            await asyncio.sleep(config["websocket_polling_delay"])
 
         await self.client.disconnect()
         self.websocket_status = "DISCONNECTED"
@@ -93,10 +92,10 @@ class AnkiHaptics:
         def trigger_websocket_reconnect() -> None:
             while self.websocket_thread and self.websocket_thread.is_alive():
                 self.keep_websocket_thread_alive = False
-                time.sleep(config.websocket_polling_delay * 2) #block main thread to give time for other thread to die before spawning another
+                time.sleep(config["websocket_polling_delay"] * 2) #block main thread to give time for other thread to die before spawning another
             self.keep_websocket_thread_alive = True
             self._start_websocket_thread(config)
-            time.sleep(config.reconnect_delay) #block main thread to give time for other thread to connect before resetting the window
+            time.sleep(config["reconnect_delay"]) #block main thread to give time for other thread to connect before resetting the window
             settings_window.close()
             self._setup_settings_window(config)
 
@@ -163,7 +162,7 @@ class AnkiHaptics:
         devices_combobox.setCurrentText(default_device_name)
         def get_device_index(config: dict, device_name: str) -> int:
             config = config_util.ensure_device_settings(config_util.get_config(aqt.mw), self.client.devices)
-            for i, config_device in enumerate(config.devices):
+            for i, config_device in enumerate(config["devices"]):
                 if config_device["device_name"] == device_name:
                     return i
             return 0
@@ -186,8 +185,8 @@ class AnkiHaptics:
 
         #Bottom Buttons
         def _set_config_attributes(config: dict, device_index: int) -> dict:
-            config.devices[device_index] = {
-                "device_name": config.devices[device_index]["device_name"],
+            config["devices"][device_index] = {
+                "device_name": config["devices"][device_index]["device_name"],
                 "enabled_by_default": aqt.mw.findChild(QCheckBox, "ankihaptics_device_enabled").isChecked(),
                 "enabled_pattern": aqt.mw.findChild(QLineEdit, "ankihaptics_device_enabled_pattern").text(),
                 "again": {

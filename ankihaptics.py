@@ -324,16 +324,7 @@ class AnkiHaptics:
         duration_tab_vertical_layout.addWidget(duration_info_label)
         duration_info_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
-        anki_action_durations_settings = [
-            {"display_name": "Again Button", "config_name": "again"},
-            {"display_name": "Hard Button", "config_name": "hard"},
-            {"display_name": "Good Button", "config_name": "good"},
-            {"display_name": "Easy Button", "config_name": "easy"},
-            {"display_name": "Show Question", "config_name": "show_question"},
-            {"display_name": "Show Answer", "config_name": "show_answer"},
-        ]
-
-        for anki_action_duration_setting in anki_action_durations_settings:
+        for anki_action_duration_setting in anki_actions_settings:
             anki_action_duration_box = QHBoxLayout()
             anki_action_duration_box.addWidget(QLabel(anki_action_duration_setting["display_name"]))
             anki_action_duration = QLineEdit()

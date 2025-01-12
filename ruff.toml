@@ -1,0 +1,15 @@
+select = ["ALL"]
+ignore = [
+    "C901", #Checks for functions with a high `McCabe` complexity.
+    "D100", #Checks for undocumented public module definitions.
+    "D101", #Checks for undocumented public class definitions.
+    "D103", #Checks for undocumented public function definitions.
+    "D104", #Checks for undocumented public package definitions.
+    "D107", #Checks for public `__init__` method definitions that are missing docstrings.
+    "E501", #Checks for lines that exceed the specified maximum character length.
+    "G003", #Checks for uses string concatenation via the + operator to format logging messages.
+    "N999", #Checks for module names that do not follow the `snake_case` naming convention or are otherwise invalid.
+    "PLC0206", #Checks for dictionary iterations that extract the dictionary value via explicit indexing, instead of using `.items()`.
+    "PLR0915", #Checks for functions or methods with too many statements.
+    "PTH120", #Checks for uses of `os.path.dirname`.
+]

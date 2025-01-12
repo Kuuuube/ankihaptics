@@ -27,6 +27,6 @@ All actions can be configured individually in settings.
 
 ## Development
 
-Run `setup.sh` to generate the `lib` folder with dependencies.
+Run `setup.sh` to generate the `lib` folder with dependencies and set up venv.
 
 Run `release.sh` to generate a zipped release build.

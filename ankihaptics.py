@@ -38,7 +38,7 @@ class AnkiHaptics:
 
             self.client = None
             self.keep_websocket_thread_alive = True
-            self.websocket_command = ""
+            self.websocket_command = {"command": None}
             self.websocket_status = "NOT_STARTED"
             self.websocket_thread = None
             self._start_websocket_thread(config)
@@ -73,10 +73,10 @@ class AnkiHaptics:
 
         currently_scanning = False
         while self.keep_websocket_thread_alive:
-            if self.websocket_command == "start_scanning" and not currently_scanning:
+            if self.websocket_command["command"] == "start_scanning" and not currently_scanning:
                 await self.client.start_scanning()
                 currently_scanning = True
-            elif self.websocket_command == "stop_scanning" and currently_scanning:
+            elif self.websocket_command["command"] == "stop_scanning" and currently_scanning:
                 await self.client.stop_scanning()
                 currently_scanning = False
 
@@ -110,6 +110,14 @@ class AnkiHaptics:
             settings_window.close()
             self._setup_settings_window(config)
 
+        def trigger_device_scanning() -> None:
+            if self.websocket_command["command"] != "start_scanning":
+                scan_button.setText("Stop Scanning for Devices")
+                self.websocket_command["command"] = "start_scanning"
+            elif self.websocket_command["command"] == "start_scanning":
+                scan_button.setText("Scan for Devices")
+                self.websocket_command["command"] = "stop_scanning"
+
         if self.websocket_status != "OK" or not self.client:
             vertical_layout.addWidget(QLabel("Failed to connect to websocket. Status code: " + self.websocket_status))
             reconnect_button = QPushButton("Reconnect", clicked = trigger_websocket_reconnect)
@@ -120,17 +128,10 @@ class AnkiHaptics:
                 settings_window.show()
             return
 
-        scan_button_text = "Scan for Devices" if self.websocket_command != "start_scanning" else "Stop Scanning for Devices"
+        scan_button_text = "Scan for Devices" if self.websocket_command["command"] != "start_scanning" else "Stop Scanning for Devices"
 
         if len(self.client.devices) <= 0:
             vertical_layout.addWidget(QLabel("No devices found. Websocket status code: " + self.websocket_status))
-            def trigger_device_scanning() -> None:
-                if self.websocket_command != "start_scanning":
-                    scan_button.setText("Stop Scanning for Devices")
-                    self.websocket_command = "start_scanning"
-                elif self.websocket_command == "start_scanning":
-                    scan_button.setText("Scan for Devices")
-                    self.websocket_command = "stop_scanning"
             scan_button = QPushButton(scan_button_text, clicked = trigger_device_scanning)
             vertical_layout.addWidget(scan_button)
             reconnect_button = QPushButton("Reconnect", clicked = trigger_websocket_reconnect)
@@ -146,13 +147,6 @@ class AnkiHaptics:
         #Top buttons
         top_buttons_horizontal_layout = QHBoxLayout()
         vertical_layout.addLayout(top_buttons_horizontal_layout)
-        def trigger_device_scanning() -> None:
-            if self.websocket_command != "start_scanning":
-                scan_button.setText("Stop Scanning for Devices")
-                self.websocket_command = "start_scanning"
-            elif self.websocket_command == "start_scanning":
-                scan_button.setText("Scan for Devices")
-                self.websocket_command = "stop_scanning"
         scan_button = QPushButton(scan_button_text, clicked = trigger_device_scanning)
         top_buttons_horizontal_layout.addWidget(scan_button)
         refresh_button = QPushButton("Refresh", clicked = trigger_refresh)

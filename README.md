@@ -2,6 +2,10 @@
 
 Haptics device integration for Anki.
 
+## WARNING
+
+Test the add-on with your devices away from your body first to make sure they do not do anything unexpected. If you run into odd behavior, [report issues here](https://github.com/Kuuuube/ankihaptics/issues).
+
 ## Setup
 
 1. Install [Intiface Central](https://intiface.com/central/)

@@ -123,6 +123,14 @@ Connect your device through scanning in Intiface directly instead and Anki Hapti
 
 (You may need to restart Intiface if it has already failed once through Anki Haptics)
 
+### Something broke!
+
+First, try restarting Anki and see if that fixes it.
+
+Second, reset your settings to default (`Tools` > `Add-ons` > `Anki Haptics` > `Config` > `Restore Defaults`) and restart Anki.
+
+If neither of those helped, please [report an issue here](https://github.com/Kuuuube/ankihaptics/issues).
+
 ## Info
 
 [Github Repository](https://github.com/Kuuuube/ankihaptics)

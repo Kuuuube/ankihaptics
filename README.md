@@ -12,6 +12,8 @@ Test the add-on with your devices away from your body first to make sure they do
 
 2. Run Intiface Central and start the server by clicking on the top left start button (▶). (Optionally, enable `Start Server when Intiface Central Launches` in `App Modes`)
 
+    For further information on setting up and connecting your device to Intiface Central, see the [official documentation](https://docs.intiface.com/docs/intiface-central/quickstart).
+
 3. Install the Anki Haptics addon.
 
     - Open Anki.

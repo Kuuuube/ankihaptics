@@ -55,6 +55,10 @@ All actions can be configured individually in settings.
 
 - `Enabled Pattern` Checks whether a command can be sent on the current card. `*` matches all cards. Uses the same format as [Anki's Browser Searching](https://docs.ankiweb.net/searching.html).
 
+- `Actuators` These will show up as checkboxes such as `Vibrate`. Check or uncheck them to enable or disable triggering these features on your device.
+
+    Only scalar device features are supported. This includes any feature that can be addressed by a single 0-100% value.
+
 ### Anki Actions
 
 - `Again Button` Checks whether a command can be sent when pressing the again button.

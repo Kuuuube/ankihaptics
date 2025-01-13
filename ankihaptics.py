@@ -290,6 +290,9 @@ class AnkiHaptics:
         device_enabled_pattern_box.addWidget(device_enabled_pattern)
         general_tab_vertical_layout.addLayout(device_enabled_pattern_box)
 
+        actuators_label = QLabel("Actuators:")
+        general_tab_vertical_layout.addWidget(actuators_label)
+
         for config_actuator in config["devices"][device_index]["actuators"]:
             device_actuator_enabled_box = QHBoxLayout()
             device_actuator_enabled = QCheckBox(config_actuator["name"])

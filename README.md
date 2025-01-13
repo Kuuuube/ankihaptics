@@ -16,7 +16,7 @@ Haptics device integration for Anki.
 
     - Click `Get Add-ons...`.
 
-    - Input `placeholder`
+    - Input `247550864`
 
     - Click `OK`.
 

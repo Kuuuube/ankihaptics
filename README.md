@@ -45,6 +45,66 @@ Show answer
 
 All actions can be configured individually in settings.
 
+## Settings Values
+
+### General
+
+- `Device Enabled` Whether or not the device should be sent commands such as vibration.
+
+- `Enabled Pattern` Checks whether a command can be sent on the current card. `*` matches all cards. Uses the same format as [Anki's Browser Searching](https://docs.ankiweb.net/searching.html).
+
+### Anki Actions
+
+- `Again Button` Checks whether a command can be sent when pressing the again button.
+
+    - `Strength` Strength to activate at when pressing the again button.
+
+- `Hard Button` Checks whether a command can be sent when pressing the hard button.
+
+    - `Strength` Strength to activate at when pressing the hard button.
+
+- `Good Button` Checks whether a command can be sent when pressing the good button.
+
+    - `Strength` Strength to activate at when pressing the good button.
+
+- `Easy Button` Checks whether a command can be sent when pressing the easy button.
+
+    - `Strength` Strength to activate at when pressing the easy button.
+
+- `Show Question` Checks whether a command can be sent when showing a card.
+
+    - `Strength` Strength to activate at when showing a card.
+
+- `Show Answer` Checks whether a command can be sent when flipping a card.
+
+    - `Strength` Strength to activate at when flipping a card.
+
+### Duration
+
+Durations apply to all connected devices.
+
+- `Again Button` Duration in seconds to activate for when pressing the again button.
+
+- `Hard Button` Duration in seconds to activate for when pressing the hard button.
+
+- `Good Button` Duration in seconds to activate for when pressing the good button.
+
+- `Easy Button` Duration in seconds to activate for when pressing the easy button.
+
+- `Show Question` Duration in seconds to activate for when showing a card.
+
+- `Show Answer` Duration in seconds to activate for when flipping a card.
+
+## Config Values
+
+For advanced users only.
+
+- `websocket_path` The websocket path configured in Intiface Central.
+
+- `reconnect_delay` The delay in seconds to wait when reconnecting to Intiface central.
+
+- `websocket_polling_delay_ms` The delay in milliseconds to wait before the websocket thread polls for commands again. Increases or decreases latency when Anki actions occur. Increase this value if you notice Anki's CPU usage spikes after installing this add-on.
+
 ## Troubleshooting
 
 ### Scanning can't find device

@@ -1,7 +1,7 @@
 import asyncio
-import logging
 import threading
 import time
+import traceback
 
 import aqt
 from aqt.qt import (
@@ -24,7 +24,7 @@ from aqt.qt import (
 )
 from buttplug import Client, ProtocolSpec, WebsocketConnector
 
-from . import config_util, hooks, util
+from . import config_util, hooks, logger, util
 
 
 class AnkiHaptics:
@@ -57,7 +57,7 @@ class AnkiHaptics:
             websocket_thread.start()
             self.websocket_thread = websocket_thread
         else:
-            logging.info("Anki Haptics Websocket Starter: Declining websocket start request. Websocket already running.")
+            logger.log("Anki Haptics Websocket Starter: Declining websocket start request. Websocket already running.")
 
     def _cleanup(self) -> None:
         self.keep_websocket_thread_alive = False
@@ -70,12 +70,12 @@ class AnkiHaptics:
         try:
             await self.client.connect(connector)
             self.websocket_status = "OK"
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.websocket_status = "ERROR\n" + str(e)
-            logging.exception("Could not connect to server, exiting")
+            logger.error_log("Could not connect to server, exiting", traceback.format_exc())
             return
 
-        self.client.logger.info("Devices: " + str(self.client.devices))
+        logger.log("Devices: " + str(self.client.devices))
 
         hooks.register_hooks(aqt.mw, self)
 

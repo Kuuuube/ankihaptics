@@ -1,9 +1,9 @@
-import logging
+import traceback
 
 import anki
 import aqt.reviewer
 
-from . import config_util
+from . import config_util, logger
 
 ease_to_button = {
     1: "again",
@@ -26,7 +26,7 @@ def _handle_hooks(mw: aqt.main.AnkiQt, ankihaptics_ref, hook: str, card: anki.ca
         try:
             client_device = [device for device in devices.values() if device.name == config_device["device_name"]][0] #should only return one device
         except Exception:
-            logging.exception("Hook failed to find device")
+            logger.error_log("Hook failed to find device", traceback.format_exc())
             continue
 
         enabled_actuators = []

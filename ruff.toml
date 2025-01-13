@@ -11,6 +11,7 @@ ignore = [
     "N999", #Checks for module names that do not follow the `snake_case` naming convention or are otherwise invalid.
     "PLC0206", #Checks for dictionary iterations that extract the dictionary value via explicit indexing, instead of using `.items()`.
     "PLR0915", #Checks for functions or methods with too many statements.
+    "PTH103", #Checks for uses of `os.makedirs`.
     "PTH120", #Checks for uses of `os.path.dirname`.
     "RUF015", #Checks the constructs which can be replaced by next(iter(...)).
 ]

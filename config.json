@@ -4,12 +4,12 @@
     "reconnect_delay": 1,
     "websocket_polling_delay_ms": 1,
     "duration": {
-        "again": 1.0,
-        "hard": 1.0,
-        "good": 1.0,
-        "easy": 1.0,
-        "show_question": 1.0,
-        "show_answer": 1.0
+        "again": 0.5,
+        "hard": 0.5,
+        "good": 0.5,
+        "easy": 0.5,
+        "show_question": 0.5,
+        "show_answer": 0.5
     },
     "devices": []
 }

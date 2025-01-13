@@ -1,21 +1,21 @@
 duration_schema = {
     "again":  {
-        "default": 1.0,
+        "default": 0.5,
     },
     "hard":  {
-        "default": 1.0,
+        "default": 0.5,
     },
     "good":  {
-        "default": 1.0,
+        "default": 0.5,
     },
     "easy":  {
-        "default": 1.0,
+        "default": 0.5,
     },
     "show_question":  {
-        "default": 1.0,
+        "default": 0.5,
     },
     "show_answer":  {
-        "default": 1.0,
+        "default": 0.5,
     },
 }
 

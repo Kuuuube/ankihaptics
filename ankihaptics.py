@@ -201,7 +201,7 @@ class AnkiHaptics:
         self._setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, device_names[0]))
 
         #Bottom Buttons
-        def _set_config_attributes(new_config: dict, device_index: int) -> dict:
+        def _set_config_attributes(config: dict, device_index: int) -> dict:
             config["devices"][device_index] = {
                 "device_name": config["devices"][device_index]["device_name"],
                 "enabled": tabs_frame.findChild(QCheckBox, "ankihaptics_device_enabled").isChecked(),

@@ -1,6 +1,7 @@
 {
     "device_name": "*",
     "enabled": false,
+    "actuators": [],
     "enabled_pattern": "*",
     "again": {
         "enabled": false,

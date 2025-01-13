@@ -1,15 +1,25 @@
 import aqt
 import buttplug
 
-from .config_schemas import config_schema, device_schema
+from .config_schemas import actuator_schema, config_schema, device_schema
 
 
 def ensure_device_settings(config: dict, devices: dict[int, buttplug.Device]) -> dict:
-    device_names = [*(x.name for x in devices.values())]
     config_device_names = [*((x["device_name"]) for x in config["devices"])]
-    for device_name in device_names:
-        if device_name not in config_device_names:
-            config["devices"].append({"device_name": device_name})
+    for device in devices.values():
+        if device.name not in config_device_names:
+            config["devices"].append({"device_name": device.name})
+            config_device_names.append(device.name)
+
+        config_device_index = config_device_names.index(device.name)
+
+        # scalar actuators only
+        if "actuators" not in config["devices"][config_device_index]:
+            config["devices"][config_device_index]["actuators"] = []
+        for actuator in device.actuators:
+            if actuator.index not in config["devices"][config_device_index]["actuators"]:
+                config["devices"][config_device_index]["actuators"].append({"index": actuator.index, "name": actuator.type, "enabled": True})
+
     return validate_config(config)
 
 def set_config(mw: aqt.main.AnkiQt, config: dict) -> None:
@@ -73,6 +83,10 @@ def validate_config(config: dict) -> dict:
     i = 0
     while i < len(config["devices"]):
         config["devices"][i] = dict_validator(config["devices"][i], device_schema)
+        j = 0
+        while j < len(config["devices"][i]["actuators"]):
+            config["devices"][i]["actuators"][j] = dict_validator(config["devices"][i]["actuators"][j], actuator_schema)
+            j += 1
         i += 1
     return config
 

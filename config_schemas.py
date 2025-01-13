@@ -101,6 +101,9 @@ device_schema = {
     "enabled": {
         "default": False,
     },
+    "actuators": {
+        "default": [],
+    },
     "enabled_pattern": {
         "default": "*",
     },
@@ -121,5 +124,17 @@ device_schema = {
     },
     "show_answer": {
         "default": show_answer_schema,
+    },
+}
+
+actuator_schema = {
+    "index": {
+        "default": -1,
+    },
+    "name": {
+        "default": "",
+    },
+    "enabled": {
+        "default": True,
     },
 }

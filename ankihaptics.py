@@ -201,10 +201,11 @@ class AnkiHaptics:
         self._setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, device_names[0]))
 
         #Bottom Buttons
-        def _set_config_attributes(config: dict, device_index: int) -> dict:
+        def _set_config_attributes(new_config: dict, device_index: int) -> dict:
             config["devices"][device_index] = {
                 "device_name": config["devices"][device_index]["device_name"],
                 "enabled": tabs_frame.findChild(QCheckBox, "ankihaptics_device_enabled").isChecked(),
+                "actuators": config["devices"][device_index]["actuators"],
                 "enabled_pattern": tabs_frame.findChild(QLineEdit, "ankihaptics_device_enabled_pattern").text(),
                 "again": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_again_box").isChecked(),
@@ -231,6 +232,15 @@ class AnkiHaptics:
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_show_answer_strength").value() / 99, 2),
                 },
             }
+            i = 0
+            while i < len(config["devices"][device_index]["actuators"]):
+                current_config_actuator = config["devices"][device_index]["actuators"][i]
+                config["devices"][device_index]["actuators"][i] = {
+                    "index": current_config_actuator["index"],
+                    "name": current_config_actuator["name"],
+                    "enabled": tabs_frame.findChild(QCheckBox, "ankihaptics_actuator_" + str(current_config_actuator["index"])).isChecked(),
+                }
+                i += 1
             config["duration"] = {
                 "again": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_again_duration").text(), 0.0),
                 "hard": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_hard_duration").text(), 0.0),
@@ -279,6 +289,15 @@ class AnkiHaptics:
         device_enabled_pattern.setObjectName("ankihaptics_device_enabled_pattern")
         device_enabled_pattern_box.addWidget(device_enabled_pattern)
         general_tab_vertical_layout.addLayout(device_enabled_pattern_box)
+
+        for config_actuator in config["devices"][device_index]["actuators"]:
+            device_actuator_enabled_box = QHBoxLayout()
+            device_actuator_enabled = QCheckBox(config_actuator["name"])
+            device_actuator_enabled.setObjectName("ankihaptics_actuator_" + str(config_actuator["index"]))
+            device_actuator_enabled.setChecked(config_actuator["enabled"])
+            device_actuator_enabled_box.addWidget(device_actuator_enabled)
+
+            general_tab_vertical_layout.addLayout(device_actuator_enabled_box)
 
 
         #Answer Buttons Tab

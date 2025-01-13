@@ -47,11 +47,17 @@ class AnkiHaptics:
             #Prevent Anki from hanging forever due to infinitely running thread
             aqt.gui_hooks.profile_will_close.append(self._cleanup)
 
+            aqt.gui_hooks.profile_did_open.append(lambda: self._start_websocket_thread(config))
+
     def _start_websocket_thread(self, config: dict) -> None:
-        websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self._start_websocket(config)))
-        websocket_thread.daemon = True
-        websocket_thread.start()
-        self.websocket_thread = websocket_thread
+        if not self.websocket_thread or (self.websocket_thread and not self.websocket_thread.is_alive()):
+            self.keep_websocket_thread_alive = True
+            websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self._start_websocket(config)))
+            websocket_thread.daemon = True
+            websocket_thread.start()
+            self.websocket_thread = websocket_thread
+        else:
+            logging.info("Anki Haptics Websocket Starter: Declining websocket start request. Websocket already running.")
 
     def _cleanup(self) -> None:
         self.keep_websocket_thread_alive = False

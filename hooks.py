@@ -1,3 +1,5 @@
+import logging
+
 import anki
 import aqt.reviewer
 
@@ -19,10 +21,14 @@ def _handle_hooks(mw: aqt.main.AnkiQt, ankihaptics_ref, hook: str, card: anki.ca
             continue
         if config_device["enabled_pattern"] != "*" and card.id not in mw.col.find_cards(config_device["enabled_pattern"]):
             continue
-        client_devices = [device for device in devices.values() if device.name == config_device["device_name"]] #should only return one device
-        if len(client_devices) <= 0:
+
+        client_device = None
+        try:
+            client_device = [device for device in devices.values() if device.name == config_device["device_name"]][0] #should only return one device
+        except Exception:
+            logging.exception("Hook failed to find device")
             continue
-        client_device = client_devices[0]
+
         websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": client_device.actuators, "strength": config_device[hook]["strength"]})
         websocket_command["args"]["duration"] = config["duration"][hook]
         ankihaptics_ref.websocket_command_queue.append(websocket_command)

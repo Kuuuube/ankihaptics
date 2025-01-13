@@ -49,6 +49,7 @@ class AnkiHaptics:
 
     def _start_websocket_thread(self, config: dict) -> None:
         websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self._start_websocket(config)))
+        websocket_thread.daemon = True
         websocket_thread.start()
         self.websocket_thread = websocket_thread
 

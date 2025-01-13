@@ -99,7 +99,9 @@ Durations apply to all connected devices.
 
 ## Config Values
 
-For advanced users only.
+For advanced users only. Accessible through `Tools` > `Add-ons` > `Anki Haptics` > `Config`. Restarting Anki is recommended after changing config values.
+
+The config can also be used to fine-tune settings values.
 
 - `websocket_path` The websocket path configured in Intiface Central.
 

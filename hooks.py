@@ -29,8 +29,15 @@ def _handle_hooks(mw: aqt.main.AnkiQt, ankihaptics_ref, hook: str, card: anki.ca
             logging.exception("Hook failed to find device")
             continue
 
-        websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": client_device.actuators, "strength": config_device[hook]["strength"]})
-        websocket_command["args"]["duration"] = config["duration"][hook]
+        enabled_actuators = []
+        for device_actuator in client_device.actuators:
+            for config_actuator in config_device["actuators"]:
+                if config_actuator["index"] == device_actuator.index and config_actuator["enabled"]:
+                    enabled_actuators.append(device_actuator)
+
+        if len(enabled_actuators) > 0:
+            websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": enabled_actuators, "strength": config_device[hook]["strength"]})
+            websocket_command["args"]["duration"] = config["duration"][hook]
 
     if len(websocket_command["args"]["devices"]) > 0:
         ankihaptics_ref.websocket_command_queue.append(websocket_command)

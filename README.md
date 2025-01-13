@@ -51,8 +51,8 @@ Connect your device through scanning in Intiface directly instead and Anki Hapti
 
 (You may need to restart Intiface if it has already failed once through Anki Haptics)
 
-## Development
+## Info
 
-Run `setup.sh` to generate the `lib` folder with dependencies and set up venv.
+[Github Repository](https://github.com/Kuuuube/ankihaptics)
 
-Run `release.sh` to generate a zipped release build.
+[Report Issues Here](https://github.com/Kuuuube/ankihaptics/issues)

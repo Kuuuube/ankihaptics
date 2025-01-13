@@ -4,32 +4,26 @@
     "enabled_pattern": "*",
     "again": {
         "enabled": false,
-        "strength": 0.1,
-        "duration": 1.0
+        "strength": 0.1
     },
     "hard": {
         "enabled": false,
-        "strength": 0.25,
-        "duration": 1.0
+        "strength": 0.25
     },
     "good": {
         "enabled": true,
-        "strength": 0.5,
-        "duration": 1.0
+        "strength": 0.5
     },
     "easy": {
         "enabled": true,
-        "strength": 1.0,
-        "duration": 1.0
+        "strength": 1.0
     },
     "show_question": {
         "enabled": false,
-        "strength": 0.1,
-        "duration": 1.0
+        "strength": 0.1
     },
     "show_answer": {
         "enabled": false,
-        "strength": 0.1,
-        "duration": 1.0
+        "strength": 0.1
     }
 }

@@ -1,1 +1,1 @@
-cp -r *.py lib *.json README.md LICENSE ~/.local/share/Anki2/addons21/ankihaptics/
+cp -r *.py lib *.json README.md LICENSE ~/.local/share/Anki2/addons21/247550864/

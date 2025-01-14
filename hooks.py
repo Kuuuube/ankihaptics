@@ -1,4 +1,5 @@
 import traceback
+from datetime import datetime, timezone
 
 import anki
 import aqt.reviewer
@@ -11,6 +12,41 @@ ease_to_button = {
     3: "good",
     4: "easy",
 }
+
+def _get_streak_buttons(config: dict) -> list:
+    streak_buttons = []
+    if config["streak"]["again"]["enabled"]:
+        streak_buttons.append(1)
+    if config["streak"]["hard"]["enabled"]:
+        streak_buttons.append(2)
+    if config["streak"]["good"]["enabled"]:
+        streak_buttons.append(3)
+    if config["streak"]["easy"]["enabled"]:
+        streak_buttons.append(4)
+    return streak_buttons
+
+def _get_streak_multipliers(mw: aqt.main.AnkiQt, config: dict, card: anki.cards.Card) -> dict:
+    current_epoch_time = int(datetime.now(tz=timezone.utc).timestamp() * 1000)
+    allowed_epoch_time = str(current_epoch_time - config["streak"]["streak_time_epoch_ms"])
+    # cid = card_id, id = epoch_ms_timestamp, ease = answer_button_pressed https://github.com/ankidroid/Anki-Android/wiki/Database-Structure#review-log
+    revlog_rows = mw.col.db.all(f"SELECT cid, id, ease FROM revlog WHERE cid = {card.id} AND id >= {allowed_epoch_time} ORDER BY id DESC")  # noqa: S608
+    recent_button_presses = []
+    for revlog_row in revlog_rows:
+        streak_buttons = _get_streak_buttons(config)
+        if revlog_row[2] not in streak_buttons or len(recent_button_presses) > config["streak"]["max_length"]:
+            break
+
+        recent_button_presses.append({"strength_multiplier": config["streak"][ease_to_button[revlog_row[2]]]["strength"], "duration_multiplier": config["streak"][ease_to_button[revlog_row[2]]]["duration"]}) #append strength multiplier
+
+    if len(recent_button_presses) < config["streak"]["min_length"]:
+        return {"strength_multiplier": 1.0, "duration_multiplier": 1.0}
+
+    multiplied_multipliers = {"strength_multiplier": 1.0, "duration_multiplier": 1.0}
+    for recent_button_press in recent_button_presses:
+        multiplied_multipliers["strength_multiplier"] *= recent_button_press["strength_multiplier"]
+        multiplied_multipliers["duration_multiplier"] *= recent_button_press["duration_multiplier"]
+
+    return multiplied_multipliers
 
 def _handle_hooks(mw: aqt.main.AnkiQt, ankihaptics_ref, hook: str, card: anki.cards.Card) -> None:  # noqa: ANN001
     config = config_util.ensure_device_settings(config_util.get_config(mw), ankihaptics_ref.client.devices)
@@ -36,8 +72,12 @@ def _handle_hooks(mw: aqt.main.AnkiQt, ankihaptics_ref, hook: str, card: anki.ca
                     enabled_actuators.append(device_actuator)
 
         if len(enabled_actuators) > 0:
-            websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": enabled_actuators, "strength": config_device[hook]["strength"]})
-            websocket_command["args"]["duration"] = config["duration"][hook]
+            streak_multipliers = _get_streak_multipliers(mw, config, card)
+            print(streak_multipliers)
+            command_strength = config_device[hook]["strength"] * streak_multipliers["strength_multiplier"]
+            command_duration = config["duration"][hook] * streak_multipliers["duration_multiplier"]
+            websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": enabled_actuators, "strength": command_strength})
+            websocket_command["args"]["duration"] = command_duration
 
     if len(websocket_command["args"]["devices"]) > 0:
         ankihaptics_ref.websocket_command_queue.append(websocket_command)

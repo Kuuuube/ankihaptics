@@ -19,6 +19,78 @@ duration_schema = {
     },
 }
 
+streak_again_button_schema = {
+    "enabled": {
+        "default": False,
+    },
+    "strength": {
+        "default": 1.0,
+    },
+    "duration": {
+        "default": 1.0,
+    },
+}
+
+streak_hard_button_schema = {
+    "enabled": {
+        "default": False,
+    },
+    "strength": {
+        "default": 1.125,
+    },
+    "duration": {
+        "default": 1.125,
+    },
+}
+
+streak_good_button_schema = {
+    "enabled": {
+        "default": False,
+    },
+    "strength": {
+        "default": 1.25,
+    },
+    "duration": {
+        "default": 1.25,
+    },
+}
+
+streak_easy_button_schema = {
+    "enabled": {
+        "default": False,
+    },
+    "strength": {
+        "default": 1.5,
+    },
+    "duration": {
+        "default": 1.5,
+    },
+}
+
+streak_schema = {
+    "again":  {
+        "default": streak_again_button_schema,
+    },
+    "hard":  {
+        "default": streak_hard_button_schema,
+    },
+    "good":  {
+        "default": streak_good_button_schema,
+    },
+    "easy":  {
+        "default": streak_easy_button_schema,
+    },
+    "min_length": {
+        "default": 2,
+    },
+    "max_length": {
+        "default": 5,
+    },
+    "streak_time_epoch_ms": {
+        "default": 3600000,
+    },
+}
+
 config_schema = {
     "version": {
         "default": 1,
@@ -34,6 +106,9 @@ config_schema = {
     },
     "duration": {
         "default": duration_schema,
+    },
+    "streak": {
+        "default": streak_schema,
     },
     "devices": {
         "default": [],

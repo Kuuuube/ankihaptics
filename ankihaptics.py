@@ -249,6 +249,31 @@ class AnkiHaptics:
                 "show_question": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_show_question_duration").text(), 0.0),
                 "show_answer": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_show_answer_duration").text(), 0.0),
             }
+            config["streak"] = {
+                "again": {
+                    "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_streak_again_box").isChecked(),
+                    "strength": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_again_strength").text(), 0.0),
+                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_again_duration").text(), 0.0),
+                },
+                "hard": {
+                    "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_streak_hard_box").isChecked(),
+                    "strength": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_hard_strength").text(), 0.0),
+                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_hard_duration").text(), 0.0),
+                },
+                "good": {
+                    "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_streak_good_box").isChecked(),
+                    "strength": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_good_strength").text(), 0.0),
+                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_good_duration").text(), 0.0),
+                },
+                "easy": {
+                    "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_streak_easy_box").isChecked(),
+                    "strength": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_easy_strength").text(), 0.0),
+                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_easy_duration").text(), 0.0),
+                },
+                "min_length": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_min").text(), 0.0),
+                "max_length": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_max").text(), 0.0),
+                "streak_time_epoch_ms": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_time").text(), 0.0) * 60000,
+            }
             config_util.set_config(aqt.mw, config)
             return config
 
@@ -367,3 +392,79 @@ class AnkiHaptics:
         duration_tab.setLayout(duration_tab_vertical_layout)
         duration_tab_scroll_area.setWidget(duration_tab)
         tabs_frame.addTab(duration_tab_scroll_area, "Duration")
+
+
+        #Streaks Tab
+        anki_streak_actions_settings = [
+            {"display_name": "Again Button", "config_name": "again"},
+            {"display_name": "Hard Button", "config_name": "hard"},
+            {"display_name": "Good Button", "config_name": "good"},
+            {"display_name": "Easy Button", "config_name": "easy"},
+        ]
+
+        streaks_tab = QWidget()
+        streaks_tab_scroll_area = QScrollArea()
+        streaks_tab_scroll_area.setWidgetResizable(True)
+        streaks_tab_vertical_layout = QVBoxLayout()
+        streaks_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        streaks_info_label = QLabel("Streaks apply to all connected devices")
+        streaks_tab_vertical_layout.addWidget(streaks_info_label)
+        streaks_info_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+
+        for anki_streak_actions_setting in anki_streak_actions_settings:
+            anki_streak_action_box = QGroupBox(anki_streak_actions_setting["display_name"])
+            anki_streak_action_box.setCheckable(True)
+            anki_streak_action_box.setChecked(config["streak"][anki_streak_actions_setting["config_name"]]["enabled"])
+            anki_streak_action_box.setObjectName("ankihaptics_streak_" + anki_streak_actions_setting["config_name"] + "_box")
+            anki_streak_action_box_layout = QVBoxLayout()
+
+            anki_streak_action_strength_box = QHBoxLayout()
+            anki_streak_action_strength_box.addWidget(QLabel("Strength"))
+            anki_streak_action_strength = QLineEdit()
+            anki_streak_action_strength.setText(str(config["streak"][anki_streak_actions_setting["config_name"]]["strength"]))
+            anki_streak_action_strength.setObjectName("ankihaptics_streak_" + anki_streak_actions_setting["config_name"] + "_strength")
+            anki_streak_action_strength_box.addWidget(anki_streak_action_strength)
+            anki_streak_action_box_layout.addLayout(anki_streak_action_strength_box)
+
+            anki_streak_action_duration_box = QHBoxLayout()
+            anki_streak_action_duration_box.addWidget(QLabel("Duration"))
+            anki_streak_action_duration = QLineEdit()
+            anki_streak_action_duration.setText(str(config["streak"][anki_streak_actions_setting["config_name"]]["duration"]))
+            anki_streak_action_duration.setObjectName("ankihaptics_streak_" + anki_streak_actions_setting["config_name"] + "_duration")
+            anki_streak_action_duration_box.addWidget(anki_streak_action_duration)
+            anki_streak_action_box_layout.addLayout(anki_streak_action_duration_box)
+
+            anki_streak_action_box.setLayout(anki_streak_action_box_layout)
+            streaks_tab_vertical_layout.addWidget(anki_streak_action_box)
+
+        anki_streak_min_box = QHBoxLayout()
+        anki_streak_min_box.addWidget(QLabel("Minimum Length"))
+        anki_streak_min = QLineEdit()
+        anki_streak_min.setText(str(config["streak"]["min_length"]))
+        anki_streak_min.setObjectName("ankihaptics_streak_min")
+        anki_streak_min_box.addWidget(anki_streak_min)
+        anki_streak_min_box.addWidget(QLabel("cards"))
+        streaks_tab_vertical_layout.addLayout(anki_streak_min_box)
+
+        anki_streak_max_box = QHBoxLayout()
+        anki_streak_max_box.addWidget(QLabel("Maximum Length"))
+        anki_streak_max = QLineEdit()
+        anki_streak_max.setText(str(config["streak"]["max_length"]))
+        anki_streak_max.setObjectName("ankihaptics_streak_max")
+        anki_streak_max_box.addWidget(anki_streak_max)
+        anki_streak_max_box.addWidget(QLabel("cards"))
+        streaks_tab_vertical_layout.addLayout(anki_streak_max_box)
+
+        anki_streak_time_box = QHBoxLayout()
+        anki_streak_time_box.addWidget(QLabel("Maximum Time"))
+        anki_streak_time = QLineEdit()
+        anki_streak_time.setText(str(config["streak"]["streak_time_epoch_ms"] / 60000))
+        anki_streak_time.setObjectName("ankihaptics_streak_time")
+        anki_streak_time_box.addWidget(anki_streak_time)
+        anki_streak_time_box.addWidget(QLabel("minutes"))
+        streaks_tab_vertical_layout.addLayout(anki_streak_time_box)
+
+        streaks_tab.setLayout(streaks_tab_vertical_layout)
+        streaks_tab_scroll_area.setWidget(streaks_tab)
+        tabs_frame.addTab(streaks_tab_scroll_area, "Streaks")

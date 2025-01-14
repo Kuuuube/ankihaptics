@@ -45,7 +45,7 @@ def get_dict_defaults(schema: dict) -> dict:
     default_dict = {}
     for schema_key in schema:
         if type(schema[schema_key]["default"]) is dict:
-            default_dict[schema_key] = get_dict_defaults(schema[schema_key])
+            default_dict[schema_key] = get_dict_defaults(schema[schema_key]["default"])
         else:
             default_dict[schema_key] = schema[schema_key]["default"]
 

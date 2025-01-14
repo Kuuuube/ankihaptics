@@ -11,5 +11,30 @@
         "show_question": 0.5,
         "show_answer": 0.5
     },
+    "streak": {
+        "again": {
+            "enabled": false,
+            "strength": 1.0,
+            "duration": 1.0
+        },
+        "hard": {
+            "enabled": false,
+            "strength": 1.125,
+            "duration": 1.125
+        },
+        "good": {
+            "enabled": false,
+            "strength": 1.25,
+            "duration": 1.25
+        },
+        "easy": {
+            "enabled": false,
+            "strength": 1.5,
+            "duration": 1.5
+        },
+        "min_length": 2,
+        "max_length": 5,
+        "streak_time_epoch_ms": 3600000
+    },
     "devices": []
 }

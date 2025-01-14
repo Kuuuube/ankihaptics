@@ -61,7 +61,7 @@ def _handle_hooks(mw: aqt.main.AnkiQt, ankihaptics_ref, hook: str, card: anki.ca
         client_device = None
         try:
             client_device = [device for device in devices.values() if device.name == config_device["device_name"]][0] #should only return one device
-        except Exception:
+        except Exception:  # noqa: BLE001
             logger.error_log("Hook failed to find device", traceback.format_exc())
             continue
 

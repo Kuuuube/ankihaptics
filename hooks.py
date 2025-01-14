@@ -73,7 +73,6 @@ def _handle_hooks(mw: aqt.main.AnkiQt, ankihaptics_ref, hook: str, card: anki.ca
 
         if len(enabled_actuators) > 0:
             streak_multipliers = _get_streak_multipliers(mw, config, card)
-            print(streak_multipliers)
             command_strength = config_device[hook]["strength"] * streak_multipliers["strength_multiplier"]
             command_duration = config["duration"][hook] * streak_multipliers["duration_multiplier"]
             websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": enabled_actuators, "strength": command_strength})

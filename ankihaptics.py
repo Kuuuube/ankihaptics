@@ -291,8 +291,8 @@ class AnkiHaptics:
 
         bottom_buttons_horizontal_layout = QHBoxLayout()
         vertical_layout.addLayout(bottom_buttons_horizontal_layout)
-        generate_button = QPushButton("Save", clicked = lambda _: _set_config_attributes(config, get_device_index(config, devices_combobox.currentText())))
-        bottom_buttons_horizontal_layout.addWidget(generate_button)
+        save_button = QPushButton("Save", clicked = lambda _: _set_config_attributes(config, get_device_index(config, devices_combobox.currentText())))
+        bottom_buttons_horizontal_layout.addWidget(save_button)
         close_button = QPushButton("Close", clicked = settings_window.reject)
         bottom_buttons_horizontal_layout.addWidget(close_button)
 
@@ -491,3 +491,21 @@ class AnkiHaptics:
         streaks_tab.setLayout(streaks_tab_vertical_layout)
         streaks_tab_scroll_area.setWidget(streaks_tab)
         tabs_frame.addTab(streaks_tab_scroll_area, "Streaks")
+
+
+        #Test Tab
+        test_tab = QWidget()
+        test_tab_scroll_area = QScrollArea()
+        test_tab_scroll_area.setWidgetResizable(True)
+        test_tab_vertical_layout = QVBoxLayout()
+        test_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        test_info_label = QLabel("Save your settings before running tests.")
+        test_tab_vertical_layout.addWidget(test_info_label)
+        test_info_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+
+
+
+        test_tab.setLayout(test_tab_vertical_layout)
+        test_tab_scroll_area.setWidget(test_tab)
+        tabs_frame.addTab(test_tab_scroll_area, "Test")

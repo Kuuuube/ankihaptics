@@ -44,6 +44,8 @@ def reset_config(mw: aqt.main.AnkiQt) -> None:
 def get_dict_defaults(schema: dict) -> dict:
     default_dict = {}
     for schema_key in schema:
+        if schema_key == "enum":
+            continue
         if type(schema[schema_key]["default"]) is dict:
             default_dict[schema_key] = get_dict_defaults(schema[schema_key]["default"])
         else:

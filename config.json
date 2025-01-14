@@ -12,6 +12,7 @@
         "show_answer": 0.5
     },
     "streak": {
+        "streak_type": "Per Deck",
         "again": {
             "enabled": false,
             "strength": 1.0,

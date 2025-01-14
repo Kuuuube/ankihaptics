@@ -250,6 +250,7 @@ class AnkiHaptics:
                 "show_answer": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_show_answer_duration").text(), 0.0),
             }
             config["streak"] = {
+                "streak_type": tabs_frame.findChild(QComboBox, "ankihaptics_streak_type").currentText(),
                 "again": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_streak_again_box").isChecked(),
                     "strength": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_again_strength").text(), 0.0),
@@ -411,6 +412,17 @@ class AnkiHaptics:
         streaks_info_label = QLabel("Streaks apply to all connected devices")
         streaks_tab_vertical_layout.addWidget(streaks_info_label)
         streaks_info_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+
+        streak_type_horizontal_layout = QHBoxLayout()
+        streak_type_combobox = QComboBox()
+        streak_types = ["Per Deck", "Per Card"]
+        streak_type_combobox.addItems(streak_types)
+        streak_type_combobox.setCurrentText(config["streak"]["streak_type"])
+        streak_type_combobox.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        streak_type_combobox.setObjectName("ankihaptics_streak_type")
+        streak_type_horizontal_layout.addWidget(QLabel("Streak Type: "))
+        streak_type_horizontal_layout.addWidget(streak_type_combobox)
+        streaks_tab_vertical_layout.addLayout(streak_type_horizontal_layout)
 
         for anki_streak_actions_setting in anki_streak_actions_settings:
             anki_streak_action_box = QGroupBox(anki_streak_actions_setting["display_name"])

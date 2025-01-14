@@ -68,6 +68,9 @@ streak_easy_button_schema = {
 }
 
 streak_schema = {
+    "streak_type": {
+        "default": "Per Deck",
+    },
     "again":  {
         "default": streak_again_button_schema,
     },

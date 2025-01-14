@@ -89,13 +89,23 @@ class AnkiHaptics:
                     await self.client.stop_scanning()
                     self.currently_scanning = False
                 elif websocket_command["command"] == "scalar_cmd":
-                    for device in websocket_command["args"]["devices"]:
-                        for actuator in device["actuators"]:
-                            await actuator.command(device["strength"])
-                    await asyncio.sleep(websocket_command["args"]["duration"])
-                    for device in websocket_command["args"]["devices"]:
-                        for actuator in device["actuators"]:
-                            await actuator.command(0.0)
+                    try:
+                        for device in websocket_command["args"]["devices"]:
+                            for actuator in device["actuators"]:
+                                await actuator.command(device["strength"])
+                        await asyncio.sleep(websocket_command["args"]["duration"])
+                        for device in websocket_command["args"]["devices"]:
+                            for actuator in device["actuators"]:
+                                await actuator.command(0.0)
+                    except Exception:  # If anything throws while sending device commands, emergency stop all devices, disconnect, clear queue, and end thread  # noqa: BLE001
+                        await self.client.stop_all()
+                        await self.client.disconnect()
+                        self.websocket_command_queue = []
+                        logger.error_log("Websocket hit error while issuing device commands. Emergency stopping all devices and clearing queue.", traceback.format_exc())
+                        print("Websocket hit error while issuing device commands. Emergency stopping all devices and clearing queue.")  # noqa: T201
+                        print(traceback.format_exc())  # noqa: T201
+                        self.websocket_status = "EMERGENCY STOP"
+                        return
 
             await asyncio.sleep(config["websocket_polling_delay_ms"] / 1000)
 

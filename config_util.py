@@ -18,7 +18,8 @@ def ensure_device_settings(config: dict, devices: dict[int, buttplug.Device]) ->
             config["devices"][config_device_index]["actuators"] = []
         for device_actuator in device.actuators:
             if len([config_actuator for config_actuator in config["devices"][config_device_index]["actuators"] if config_actuator["index"] == device_actuator.index]) <= 0:
-                config["devices"][config_device_index]["actuators"].append({"index": device_actuator.index, "name": device_actuator.type, "enabled": True})
+                actuator_name = device_actuator.type + " " + device_actuator.description if len(device_actuator.description) > 0 else device_actuator.type
+                config["devices"][config_device_index]["actuators"].append({"index": device_actuator.index, "name": actuator_name, "enabled": True})
 
     return validate_config(config)
 

@@ -103,7 +103,13 @@ Durations apply to all connected devices.
 
 ### Streaks
 
-Streaks apply to all connected devices and are calculated per-card. Breaking a streak on one card does not mean streaks on all cards are broken.
+Streaks apply to all connected devices.
+
+- `Streak Type`:
+
+    `Per Deck` Streaks are calculated per-deck. Breaking a streak on one card in a deck breaks the streak on the entire deck.
+
+    `Per Card` Streaks are calculated per-card. Breaking a streak on one card does not mean streaks on all cards are broken.
 
 - `Again Button` If unchecked, the again button breaks streaks. If checked, the again button adds to streaks.
 

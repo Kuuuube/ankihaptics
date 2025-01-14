@@ -415,7 +415,7 @@ class AnkiHaptics:
 
         streak_type_horizontal_layout = QHBoxLayout()
         streak_type_combobox = QComboBox()
-        streak_types = ["Per Deck", "Per Card"]
+        streak_types = ["Per Collection", "Per Deck", "Per Card"]
         streak_type_combobox.addItems(streak_types)
         streak_type_combobox.setCurrentText(config["streak"]["streak_type"])
         streak_type_combobox.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)

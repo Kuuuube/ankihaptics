@@ -107,6 +107,8 @@ Streaks apply to all connected devices.
 
 - `Streak Type`:
 
+    `Per Collection` Streaks are calculated per-collection (all decks combined). Breaking a streak on one card breaks the streak for the entire collection.
+
     `Per Deck` Streaks are calculated per-deck. Breaking a streak on one card in a deck breaks the streak on the entire deck.
 
     `Per Card` Streaks are calculated per-card. Breaking a streak on one card does not mean streaks on all cards are broken.

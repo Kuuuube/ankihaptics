@@ -504,7 +504,49 @@ class AnkiHaptics:
         test_tab_vertical_layout.addWidget(test_info_label)
         test_info_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
+        test_type_horizontal_layout = QHBoxLayout()
+        test_type_combobox = QComboBox()
+        test_types = [*(x["display_name"] for x in anki_actions_settings)]
+        test_type_combobox.addItems(test_types)
+        test_type_combobox.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        test_type_horizontal_layout.addWidget(QLabel("Test Action: "))
+        test_type_horizontal_layout.addWidget(test_type_combobox)
+        test_tab_vertical_layout.addLayout(test_type_horizontal_layout)
 
+        def run_test() -> None:
+            hook = [anki_actions_setting["config_name"] for anki_actions_setting in anki_actions_settings if anki_actions_setting["display_name"] == test_type_combobox.currentText()][0]
+
+            config = config_util.ensure_device_settings(config_util.get_config(aqt.mw), self.client.devices)
+            devices = self.client.devices
+            config_device = config["devices"][device_index]
+            websocket_command = {"command": "scalar_cmd", "args": {"devices": []}}
+
+            if not config_device[hook]["enabled"]:
+                return
+
+            client_device = None
+            try:
+                client_device = [device for device in devices.values() if device.name == config_device["device_name"]][0] #should only return one device
+            except Exception:  # noqa: BLE001
+                logger.error_log("Hook failed to find device", traceback.format_exc())
+                return
+
+            enabled_actuators = []
+            for device_actuator in client_device.actuators:
+                for config_actuator in config_device["actuators"]:
+                    if config_actuator["index"] == device_actuator.index and config_actuator["enabled"]:
+                        enabled_actuators.append(device_actuator)
+
+            if len(enabled_actuators) > 0:
+                command_strength = config_device[hook]["strength"]
+                command_duration = config["duration"][hook]
+                websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": enabled_actuators, "strength": command_strength})
+                websocket_command["args"]["duration"] = command_duration
+
+            self.websocket_command_queue.append(websocket_command)
+
+        test_button = QPushButton("Run Test", clicked = run_test)
+        test_tab_vertical_layout.addWidget(test_button)
 
         test_tab.setLayout(test_tab_vertical_layout)
         test_tab_scroll_area.setWidget(test_tab)

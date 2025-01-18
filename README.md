@@ -49,6 +49,8 @@ All actions can be configured individually in settings.
 
 ## Settings Values
 
+Save your settings before switching devices or closing the settings window. Settings are not saved automatically.
+
 ### General
 
 - `Device Enabled` Whether or not the device should be sent commands such as vibration.

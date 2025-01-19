@@ -44,22 +44,18 @@ class AnkiHaptics:
             self.currently_scanning = False
             self._start_websocket_thread(config)
 
-            #Prevent Anki from hanging forever due to infinitely running thread
-            aqt.gui_hooks.profile_will_close.append(self._cleanup)
-
-            aqt.gui_hooks.profile_did_open.append(lambda: self._start_websocket_thread(config))
-
     def _start_websocket_thread(self, config: dict) -> None:
         if not self.websocket_thread or (self.websocket_thread and not self.websocket_thread.is_alive()):
             self.keep_websocket_thread_alive = True
             websocket_thread = threading.Thread(target = lambda: util.start_async(lambda: self._start_websocket(config)))
+            #Daemon threads are not awaited for shutdown. This prevents Anki from hanging forever due to infinitely running thread.
             websocket_thread.daemon = True
             websocket_thread.start()
             self.websocket_thread = websocket_thread
         else:
             logger.log("Anki Haptics Websocket Starter: Declining websocket start request. Websocket already running.")
 
-    def _cleanup(self) -> None:
+    def _cleanup_thread(self) -> None:
         self.keep_websocket_thread_alive = False
 
     async def _start_websocket(self, config: dict) -> None:
@@ -121,7 +117,7 @@ class AnkiHaptics:
 
         def trigger_websocket_reconnect() -> None:
             while self.websocket_thread and self.websocket_thread.is_alive():
-                self.keep_websocket_thread_alive = False
+                self._cleanup_thread()
                 #block main thread to give time for other thread to die before spawning another
                 one_second = 1000
                 if config["websocket_polling_delay_ms"] <= one_second:

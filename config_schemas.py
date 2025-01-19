@@ -215,4 +215,7 @@ actuator_schema = {
     "enabled": {
         "default": True,
     },
+    "strength_multiplier": {
+        "default": 1.0,
+    },
 }

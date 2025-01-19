@@ -88,11 +88,11 @@ class AnkiHaptics:
                     try:
                         for device in websocket_command["args"]["devices"]:
                             for actuator in device["actuators"]:
-                                await actuator.command(device["strength"])
+                                await actuator["actuator"].command(device["strength"] * actuator["strength_multiplier"])
                         await asyncio.sleep(websocket_command["args"]["duration"])
                         for device in websocket_command["args"]["devices"]:
                             for actuator in device["actuators"]:
-                                await actuator.command(0.0)
+                                await actuator["actuator"].command(0.0)
                     except Exception:  # If anything throws while sending device commands, emergency stop all devices, disconnect, clear queue, and end thread  # noqa: BLE001
                         await self.client.stop_all()
                         await self.client.disconnect()
@@ -245,7 +245,8 @@ class AnkiHaptics:
                 config["devices"][device_index]["actuators"][i] = {
                     "index": current_config_actuator["index"],
                     "name": current_config_actuator["name"],
-                    "enabled": tabs_frame.findChild(QCheckBox, "ankihaptics_actuator_" + str(current_config_actuator["index"])).isChecked(),
+                    "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_actuator_" + str(current_config_actuator["index"])).isChecked(),
+                    "strength_multiplier": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_actuator_" + str(current_config_actuator["index"]) + "_strength_multiplier").text(), 0.0),
                 }
                 i += 1
             config["duration"] = {
@@ -327,13 +328,22 @@ class AnkiHaptics:
         general_tab_vertical_layout.addWidget(actuators_label)
 
         for config_actuator in config["devices"][device_index]["actuators"]:
-            device_actuator_enabled_box = QHBoxLayout()
-            device_actuator_enabled = QCheckBox(config_actuator["name"])
-            device_actuator_enabled.setObjectName("ankihaptics_actuator_" + str(config_actuator["index"]))
-            device_actuator_enabled.setChecked(config_actuator["enabled"])
-            device_actuator_enabled_box.addWidget(device_actuator_enabled)
+            device_actuator_enabled_box = QGroupBox(config_actuator["name"])
+            device_actuator_enabled_box.setCheckable(True)
+            device_actuator_enabled_box.setChecked(config_actuator["enabled"])
+            device_actuator_enabled_box.setObjectName("ankihaptics_actuator_" + str(config_actuator["index"]))
+            device_actuator_enabled_box_layout = QVBoxLayout()
 
-            general_tab_vertical_layout.addLayout(device_actuator_enabled_box)
+            device_actuator_strength_multiplier_box = QHBoxLayout()
+            device_actuator_strength_multiplier_box.addWidget(QLabel("Strength Multiplier"))
+            device_actuator_strength_multiplier = QLineEdit()
+            device_actuator_strength_multiplier.setText(str(config_actuator["strength_multiplier"]))
+            device_actuator_strength_multiplier.setObjectName("ankihaptics_actuator_" + str(config_actuator["index"]) + "_strength_multiplier")
+            device_actuator_strength_multiplier_box.addWidget(device_actuator_strength_multiplier)
+            device_actuator_enabled_box_layout.addLayout(device_actuator_strength_multiplier_box)
+
+            device_actuator_enabled_box.setLayout(device_actuator_enabled_box_layout)
+            general_tab_vertical_layout.addWidget(device_actuator_enabled_box)
 
 
         #Answer Buttons Tab

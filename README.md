@@ -61,6 +61,8 @@ Save your settings before switching devices or closing the settings window. Sett
 
     Only scalar device features are supported. This includes any feature that can be addressed by a single 0-100% value.
 
+    - `Strength Multiplier` Strength to multiply by when activating this actuator.
+
 ### Anki Actions
 
 - `Again Button` Checks whether a command can be sent when pressing the again button.

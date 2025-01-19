@@ -541,7 +541,7 @@ class AnkiHaptics:
             for device_actuator in client_device.actuators:
                 for config_actuator in config_device["actuators"]:
                     if config_actuator["index"] == device_actuator.index and config_actuator["enabled"]:
-                        enabled_actuators.append(device_actuator)
+                        enabled_actuators.append({"actuator": device_actuator, "strength_multiplier": config_actuator["strength_multiplier"]})
 
             if len(enabled_actuators) > 0:
                 command_strength = config_device[hook]["strength"]

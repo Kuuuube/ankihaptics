@@ -61,7 +61,9 @@ Save your settings before switching devices or closing the settings window. Sett
 
     Only scalar device features are supported. This includes any feature that can be addressed by a single 0-100% value.
 
-    - `Strength Multiplier` Strength to multiply by when activating this actuator.
+    - `Strength Multiplier` Multiplies strength when activating this actuator.
+
+    - `Duration Multiplier` Multiplies duration when activating this actuator.
 
 ### Anki Actions
 
@@ -69,26 +71,37 @@ Save your settings before switching devices or closing the settings window. Sett
 
     - `Strength` Strength to activate at when pressing the again button.
 
+    - `Duration` Duration to activate for when pressing the again button.
+
 - `Hard Button` Checks whether a command can be sent when pressing the hard button.
 
     - `Strength` Strength to activate at when pressing the hard button.
+
+    - `Duration` Duration to activate for when pressing the hard button.
 
 - `Good Button` Checks whether a command can be sent when pressing the good button.
 
     - `Strength` Strength to activate at when pressing the good button.
 
+    - `Duration` Duration to activate for when pressing the good button.
+
 - `Easy Button` Checks whether a command can be sent when pressing the easy button.
 
     - `Strength` Strength to activate at when pressing the easy button.
+
+    - `Duration` Duration to activate for when pressing the easy button.
 
 - `Show Question` Checks whether a command can be sent when showing a card.
 
     - `Strength` Strength to activate at when showing a card.
 
+    - `Duration` Duration to activate for when showing a card.
+
 - `Show Answer` Checks whether a command can be sent when flipping a card.
 
     - `Strength` Strength to activate at when flipping a card.
 
+    - `Duration` Duration to activate for when flipping a card.
 
 ### Streaks
 

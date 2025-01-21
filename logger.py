@@ -1,9 +1,9 @@
+import datetime
 import os
 import traceback
-from datetime import datetime, timezone
 
 logger_directory = os.path.dirname(__file__) + "/user_files/logs/"
-current_epoch_time_ms_str = str(int(datetime.now(tz=timezone.utc).timestamp() * 1000))
+current_epoch_time_ms_str = str(int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000))
 logger_filepath = logger_directory + "output_log_" + current_epoch_time_ms_str
 
 def ensure_logger_directory() -> None:
@@ -11,7 +11,7 @@ def ensure_logger_directory() -> None:
 
 def error_log(message: str, error: str = "") -> None:
     try:
-        utc_time = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H-%M-%S")
+        utc_time = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d_%H-%M-%S")
         ensure_logger_directory()
         with open(logger_filepath + "_error.log", "a", encoding="utf8") as log_file:
             log_file.write(utc_time + ", " + str(message).replace("\r", r"\r").replace("\n", r"\n") + ", " + str(error).replace("\r", r"\r").replace("\n", r"\n") + "\n")
@@ -21,7 +21,7 @@ def error_log(message: str, error: str = "") -> None:
 
 def log(message: str) -> None:
     try:
-        utc_time = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H-%M-%S")
+        utc_time = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d_%H-%M-%S")
         ensure_logger_directory()
         with open(logger_filepath + "_log.log", "a", encoding="utf8") as log_file:
             log_file.write(utc_time + ", " + str(message).replace("\r", r"\r").replace("\n", r"\n") + "\n")

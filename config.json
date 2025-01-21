@@ -3,14 +3,6 @@
     "websocket_path": "ws://127.0.0.1:12345",
     "reconnect_delay": 1,
     "websocket_polling_delay_ms": 1,
-    "duration": {
-        "again": 0.5,
-        "hard": 0.5,
-        "good": 0.5,
-        "easy": 0.5,
-        "show_question": 0.5,
-        "show_answer": 0.5
-    },
     "streak": {
         "streak_type": "Per Deck",
         "again": {

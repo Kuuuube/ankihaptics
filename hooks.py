@@ -45,9 +45,8 @@ def _handle_hooks(mw: aqt.main.AnkiQt, ankihaptics_ref, hook: str, card: anki.ca
             elif config["streak"]["streak_type"] == "Per Collection":
                 streak_multipliers = get_streaks.get_streak_multipliers_per_collection(mw, config, card)
             command_strength = config_device[hook]["strength"] * streak_multipliers["strength_multiplier"]
-            command_duration = config["duration"][hook] * streak_multipliers["duration_multiplier"]
-            websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": enabled_actuators, "strength": command_strength})
-            websocket_command["args"]["duration"] = command_duration
+            command_duration = config_device[hook]["duration"] * streak_multipliers["duration_multiplier"]
+            websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": enabled_actuators, "strength": command_strength, "duration": command_duration})
 
     if len(websocket_command["args"]["devices"]) > 0:
         ankihaptics_ref.websocket_command_queue.append(websocket_command)

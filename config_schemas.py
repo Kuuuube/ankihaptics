@@ -1,24 +1,3 @@
-duration_schema = {
-    "again":  {
-        "default": 0.5,
-    },
-    "hard":  {
-        "default": 0.5,
-    },
-    "good":  {
-        "default": 0.5,
-    },
-    "easy":  {
-        "default": 0.5,
-    },
-    "show_question":  {
-        "default": 0.5,
-    },
-    "show_answer":  {
-        "default": 0.5,
-    },
-}
-
 streak_again_button_schema = {
     "enabled": {
         "default": False,
@@ -107,9 +86,6 @@ config_schema = {
     "websocket_polling_delay_ms": {
         "default": 1,
     },
-    "duration": {
-        "default": duration_schema,
-    },
     "streak": {
         "default": streak_schema,
     },
@@ -125,6 +101,9 @@ again_button_schema = {
     "strength": {
         "default": 0.1,
     },
+    "duration": {
+        "default": 0.5,
+    },
 }
 
 hard_button_schema = {
@@ -134,6 +113,9 @@ hard_button_schema = {
     "strength": {
         "default": 0.25,
     },
+    "duration": {
+        "default": 0.5,
+    },
 }
 
 good_button_schema = {
@@ -141,6 +123,9 @@ good_button_schema = {
         "default": True,
     },
     "strength": {
+        "default": 0.5,
+    },
+    "duration": {
         "default": 0.5,
     },
 }
@@ -152,6 +137,9 @@ easy_button_schema = {
     "strength": {
         "default": 1.0,
     },
+    "duration": {
+        "default": 0.5,
+    },
 }
 
 show_question_schema = {
@@ -161,6 +149,9 @@ show_question_schema = {
     "strength": {
         "default": 0.1,
     },
+    "duration": {
+        "default": 0.5,
+    },
 }
 
 show_answer_schema = {
@@ -169,6 +160,9 @@ show_answer_schema = {
     },
     "strength": {
         "default": 0.1,
+    },
+    "duration": {
+        "default": 0.5,
     },
 }
 

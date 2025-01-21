@@ -86,13 +86,25 @@ class AnkiHaptics:
                     self.currently_scanning = False
                 elif websocket_command["command"] == "scalar_cmd":
                     try:
+                        active_actuators = []
                         for device in websocket_command["args"]["devices"]:
                             for actuator in device["actuators"]:
                                 await actuator["actuator"].command(device["strength"] * actuator["strength_multiplier"])
-                        await asyncio.sleep(websocket_command["args"]["duration"])
-                        for device in websocket_command["args"]["devices"]:
-                            for actuator in device["actuators"]:
-                                await actuator["actuator"].command(0.0)
+                                start_time_epoch_ms = time.time() * 1000
+                                active_actuators.append({"actuator": actuator["actuator"], "end_time": start_time_epoch_ms + device["duration"] * 1000})
+
+                        while len(active_actuators) > 0:
+                            i = 0
+                            while i < len(active_actuators):
+                                current_time_epoch_ms = time.time() * 1000
+                                if current_time_epoch_ms >= active_actuators[i]["end_time"]:
+                                    await active_actuators[i]["actuator"].command(0.0)
+                                    del active_actuators[i]
+                                    continue
+                                i += 1
+
+                            await asyncio.sleep(config["websocket_polling_delay_ms"] / 1000)
+
                     except Exception:  # If anything throws while sending device commands, emergency stop all devices, disconnect, clear queue, and end thread  # noqa: BLE001
                         await self.client.stop_all()
                         await self.client.disconnect()
@@ -217,26 +229,32 @@ class AnkiHaptics:
                 "again": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_again_box").isChecked(),
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_again_strength").value() / 99, 2),
+                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_again_duration").text(), 0.0),
                 },
                 "hard": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_hard_box").isChecked(),
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_hard_strength").value() / 99, 2),
+                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_hard_duration").text(), 0.0),
                 },
                 "good": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_good_box").isChecked(),
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_good_strength").value() / 99, 2),
+                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_good_duration").text(), 0.0),
                 },
                 "easy": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_easy_box").isChecked(),
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_easy_strength").value() / 99, 2),
+                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_easy_duration").text(), 0.0),
                 },
                 "show_question": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_show_question_box").isChecked(),
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_show_question_strength").value() / 99, 2),
+                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_show_question_duration").text(), 0.0),
                 },
                 "show_answer": {
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_show_answer_box").isChecked(),
                     "strength": round(tabs_frame.findChild(QSlider, "ankihaptics_show_answer_strength").value() / 99, 2),
+                    "duration": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_show_answer_duration").text(), 0.0),
                 },
             }
             i = 0
@@ -249,14 +267,6 @@ class AnkiHaptics:
                     "strength_multiplier": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_actuator_" + str(current_config_actuator["index"]) + "_strength_multiplier").text(), 0.0),
                 }
                 i += 1
-            config["duration"] = {
-                "again": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_again_duration").text(), 0.0),
-                "hard": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_hard_duration").text(), 0.0),
-                "good": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_good_duration").text(), 0.0),
-                "easy": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_easy_duration").text(), 0.0),
-                "show_question": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_show_question_duration").text(), 0.0),
-                "show_answer": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_show_answer_duration").text(), 0.0),
-            }
             config["streak"] = {
                 "streak_type": tabs_frame.findChild(QComboBox, "ankihaptics_streak_type").currentText(),
                 "again": {
@@ -381,35 +391,17 @@ class AnkiHaptics:
             anki_action_strength_box.addWidget(anki_action_strength)
             anki_action_box_layout.addLayout(anki_action_strength_box)
 
-            anki_action_box.setLayout(anki_action_box_layout)
-            anki_actions_tab_vertical_layout.addWidget(anki_action_box)
-
-
-        #Duration Tab
-        duration_tab = QWidget()
-        duration_tab_scroll_area = QScrollArea()
-        duration_tab_scroll_area.setWidgetResizable(True)
-        duration_tab_vertical_layout = QVBoxLayout()
-        duration_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-
-        duration_info_label = QLabel("Durations apply to all connected devices")
-        duration_tab_vertical_layout.addWidget(duration_info_label)
-        duration_info_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-
-        for anki_action_duration_setting in anki_actions_settings:
             anki_action_duration_box = QHBoxLayout()
-            anki_action_duration_box.addWidget(QLabel(anki_action_duration_setting["display_name"]))
+            anki_action_duration_box.addWidget(QLabel("Duration"))
             anki_action_duration = QLineEdit()
-            anki_action_duration.setText(str(config["duration"][anki_action_duration_setting["config_name"]]))
-            anki_action_duration.setObjectName("ankihaptics_" + anki_action_duration_setting["config_name"] + "_duration")
+            anki_action_duration.setText(str(config["devices"][device_index][anki_action_setting["config_name"]]["duration"]))
+            anki_action_duration.setObjectName("ankihaptics_" + anki_action_setting["config_name"] + "_duration")
             anki_action_duration_box.addWidget(anki_action_duration)
             anki_action_duration_box.addWidget(QLabel("seconds"))
+            anki_action_box_layout.addLayout(anki_action_duration_box)
 
-            duration_tab_vertical_layout.addLayout(anki_action_duration_box)
-
-        duration_tab.setLayout(duration_tab_vertical_layout)
-        duration_tab_scroll_area.setWidget(duration_tab)
-        tabs_frame.addTab(duration_tab_scroll_area, "Duration")
+            anki_action_box.setLayout(anki_action_box_layout)
+            anki_actions_tab_vertical_layout.addWidget(anki_action_box)
 
 
         #Streaks Tab
@@ -545,9 +537,8 @@ class AnkiHaptics:
 
             if len(enabled_actuators) > 0:
                 command_strength = config_device[hook]["strength"]
-                command_duration = config["duration"][hook]
-                websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": enabled_actuators, "strength": command_strength})
-                websocket_command["args"]["duration"] = command_duration
+                command_duration = config_device[hook]["duration"]
+                websocket_command["args"]["devices"].append({"index": client_device.index, "actuators": enabled_actuators, "strength": command_strength, "duration": command_duration})
 
             self.websocket_command_queue.append(websocket_command)
 

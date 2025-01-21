@@ -5,26 +5,32 @@
     "enabled_pattern": "*",
     "again": {
         "enabled": false,
-        "strength": 0.1
+        "strength": 0.1,
+        "duration": 0.5
     },
     "hard": {
         "enabled": false,
-        "strength": 0.25
+        "strength": 0.25,
+        "duration": 0.5
     },
     "good": {
         "enabled": true,
-        "strength": 0.5
+        "strength": 0.5,
+        "duration": 0.5
     },
     "easy": {
         "enabled": true,
-        "strength": 1.0
+        "strength": 1.0,
+        "duration": 0.5
     },
     "show_question": {
         "enabled": false,
-        "strength": 0.1
+        "strength": 0.1,
+        "duration": 0.5
     },
     "show_answer": {
         "enabled": false,
-        "strength": 0.1
+        "strength": 0.1,
+        "duration": 0.5
     }
 }

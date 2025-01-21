@@ -149,7 +149,9 @@ The config can also be used to fine-tune settings values.
 
 - `reconnect_delay` The delay in seconds to wait when reconnecting to Intiface central.
 
-- `websocket_polling_delay_ms` The delay in milliseconds to wait before the websocket thread polls for commands again. Increases or decreases latency when Anki actions occur. Increase this value if you notice Anki's CPU usage spikes after installing this add-on.
+- `websocket_polling_delay_ms` The delay in milliseconds to wait before the websocket thread polls for commands again. Increases or decreases latency when actions occur.
+
+    Increase this value if you notice Anki's CPU usage spikes after installing this add-on. But be careful increasing it too much as this will add to timer inaccuracies.
 
 ## Troubleshooting
 

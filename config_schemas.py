@@ -212,4 +212,7 @@ actuator_schema = {
     "strength_multiplier": {
         "default": 1.0,
     },
+    "duration_multiplier": {
+        "default": 1.0,
+    },
 }

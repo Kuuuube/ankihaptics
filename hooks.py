@@ -34,7 +34,7 @@ def _handle_hooks(mw: aqt.main.AnkiQt, ankihaptics_ref, hook: str, card: anki.ca
         for device_actuator in client_device.actuators:
             for config_actuator in config_device["actuators"]:
                 if config_actuator["index"] == device_actuator.index and config_actuator["enabled"]:
-                    enabled_actuators.append({"actuator": device_actuator, "strength_multiplier": config_actuator["strength_multiplier"]})
+                    enabled_actuators.append({"actuator": device_actuator, "strength_multiplier": config_actuator["strength_multiplier"], "duration_multiplier": config_actuator["duration_multiplier"]})
 
         if len(enabled_actuators) > 0:
             streak_multipliers = {"strength_multiplier": 1.0, "duration_multiplier": 1.0}

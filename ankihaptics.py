@@ -91,7 +91,7 @@ class AnkiHaptics:
                             for actuator in device["actuators"]:
                                 await actuator["actuator"].command(device["strength"] * actuator["strength_multiplier"])
                                 start_time_epoch_ms = time.time() * 1000
-                                active_actuators.append({"actuator": actuator["actuator"], "end_time": start_time_epoch_ms + device["duration"] * 1000})
+                                active_actuators.append({"actuator": actuator["actuator"], "end_time": start_time_epoch_ms + (device["duration"] * actuator["duration_multiplier"]) * 1000})
 
                         while len(active_actuators) > 0:
                             i = 0
@@ -265,6 +265,7 @@ class AnkiHaptics:
                     "name": current_config_actuator["name"],
                     "enabled": tabs_frame.findChild(QGroupBox, "ankihaptics_actuator_" + str(current_config_actuator["index"])).isChecked(),
                     "strength_multiplier": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_actuator_" + str(current_config_actuator["index"]) + "_strength_multiplier").text(), 0.0),
+                    "duration_multiplier": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_actuator_" + str(current_config_actuator["index"]) + "_duration_multiplier").text(), 0.0),
                 }
                 i += 1
             config["streak"] = {
@@ -351,6 +352,14 @@ class AnkiHaptics:
             device_actuator_strength_multiplier.setObjectName("ankihaptics_actuator_" + str(config_actuator["index"]) + "_strength_multiplier")
             device_actuator_strength_multiplier_box.addWidget(device_actuator_strength_multiplier)
             device_actuator_enabled_box_layout.addLayout(device_actuator_strength_multiplier_box)
+
+            device_actuator_duration_multiplier_box = QHBoxLayout()
+            device_actuator_duration_multiplier_box.addWidget(QLabel("Duration Multiplier"))
+            device_actuator_duration_multiplier = QLineEdit()
+            device_actuator_duration_multiplier.setText(str(config_actuator["duration_multiplier"]))
+            device_actuator_duration_multiplier.setObjectName("ankihaptics_actuator_" + str(config_actuator["index"]) + "_duration_multiplier")
+            device_actuator_duration_multiplier_box.addWidget(device_actuator_duration_multiplier)
+            device_actuator_enabled_box_layout.addLayout(device_actuator_duration_multiplier_box)
 
             device_actuator_enabled_box.setLayout(device_actuator_enabled_box_layout)
             general_tab_vertical_layout.addWidget(device_actuator_enabled_box)
@@ -533,7 +542,7 @@ class AnkiHaptics:
             for device_actuator in client_device.actuators:
                 for config_actuator in config_device["actuators"]:
                     if config_actuator["index"] == device_actuator.index and config_actuator["enabled"]:
-                        enabled_actuators.append({"actuator": device_actuator, "strength_multiplier": config_actuator["strength_multiplier"]})
+                        enabled_actuators.append({"actuator": device_actuator, "strength_multiplier": config_actuator["strength_multiplier"], "duration_multiplier": config_actuator["duration_multiplier"]})
 
             if len(enabled_actuators) > 0:
                 command_strength = config_device[hook]["strength"]

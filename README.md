@@ -89,21 +89,6 @@ Save your settings before switching devices or closing the settings window. Sett
 
     - `Strength` Strength to activate at when flipping a card.
 
-### Duration
-
-Durations apply to all connected devices.
-
-- `Again Button` Duration in seconds to activate for when pressing the again button.
-
-- `Hard Button` Duration in seconds to activate for when pressing the hard button.
-
-- `Good Button` Duration in seconds to activate for when pressing the good button.
-
-- `Easy Button` Duration in seconds to activate for when pressing the easy button.
-
-- `Show Question` Duration in seconds to activate for when showing a card.
-
-- `Show Answer` Duration in seconds to activate for when flipping a card.
 
 ### Streaks
 

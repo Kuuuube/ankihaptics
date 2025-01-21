@@ -76,7 +76,7 @@ class AnkiHaptics:
         hooks.register_hooks(aqt.mw, self)
 
         while self.keep_websocket_thread_alive:
-            while len(self.websocket_command_queue) > 0:
+            if len(self.websocket_command_queue) > 0:
                 websocket_command = self.websocket_command_queue.pop(0)
                 if websocket_command["command"] == "start_scanning" and not self.currently_scanning:
                     await self.client.start_scanning()

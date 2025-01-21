@@ -119,19 +119,19 @@ Streaks apply to all connected devices.
 
 - `Again Button` If unchecked, the again button breaks streaks. If checked, the again button adds to streaks.
 
-    - `Strength` and `Duration` Strength and duration to multiply by when pressing the again button in a streak.
+    - `Strength` and `Duration` Multiplies strength and duration when pressing the again button in a streak.
 
 - `Hard Button` If unchecked, the hard button breaks streaks. If checked, the hard button adds to streaks.
 
-    - `Strength` and `Duration` Strength and duration to multiply by when pressing the hard button in a streak.
+    - `Strength` and `Duration` Multiplies strength and duration when pressing the hard button in a streak.
 
 - `Good Button` If unchecked, the good button breaks streaks. If checked, the good button adds to streaks.
 
-    - `Strength` and `Duration` Strength and duration to multiply by when pressing the good button in a streak.
+    - `Strength` and `Duration` Multiplies strength and duration when pressing the good button in a streak.
 
 - `Easy Button` If unchecked, the easy button breaks streaks. If checked, the easy button adds to streaks.
 
-    - `Strength` and `Duration` Strength and duration to multiply by when pressing the easy button in a streak.
+    - `Strength` and `Duration` Multiplies strength and duration when pressing the easy button in a streak.
 
 - `Minimum Length` Minimum number of streak adding buttons to press for streak multipliers to activate.
 

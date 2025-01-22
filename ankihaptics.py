@@ -220,7 +220,7 @@ class AnkiHaptics:
         self._setup_vertical_layout_tabs(config, tabs_frame, get_device_index(config, device_names[0]))
 
         #Bottom Buttons
-        def _set_config_attributes(config: dict, device_index: int) -> dict:
+        def _settings_to_config_attributes(config: dict, device_index: int) -> dict:
             config["devices"][device_index] = {
                 "device_name": config["devices"][device_index]["device_name"],
                 "enabled": tabs_frame.findChild(QCheckBox, "ankihaptics_device_enabled").isChecked(),
@@ -294,12 +294,11 @@ class AnkiHaptics:
                 "max_length": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_max").text(), 0.0),
                 "streak_time_epoch_ms": util.maybe_parse_float(tabs_frame.findChild(QLineEdit, "ankihaptics_streak_time").text(), 0.0) * 60000,
             }
-            config_util.set_config(aqt.mw, config)
             return config
 
         bottom_buttons_horizontal_layout = QHBoxLayout()
         vertical_layout.addLayout(bottom_buttons_horizontal_layout)
-        save_button = QPushButton("Save", clicked = lambda _: _set_config_attributes(config, get_device_index(config, devices_combobox.currentText())))
+        save_button = QPushButton("Save", clicked = lambda _: config_util.set_config(aqt.mw, _settings_to_config_attributes(config, get_device_index(config, devices_combobox.currentText()))))
         bottom_buttons_horizontal_layout.addWidget(save_button)
         close_button = QPushButton("Close", clicked = settings_window.reject)
         bottom_buttons_horizontal_layout.addWidget(close_button)

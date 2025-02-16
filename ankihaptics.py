@@ -196,9 +196,9 @@ class AnkiHaptics:
         top_buttons_horizontal_layout.addWidget(scan_button)
         refresh_button = QPushButton("Refresh", clicked = trigger_refresh)
         top_buttons_horizontal_layout.addWidget(refresh_button)
+        disconnect_button = QPushButton("Disconnect", clicked = trigger_websocket_disconnect)
+        top_buttons_horizontal_layout.addWidget(disconnect_button)
         restart_button = QPushButton("Restart", clicked = trigger_restart)
-        top_buttons_horizontal_layout.addWidget(restart_button)
-        restart_button = QPushButton("Disconnect", clicked = trigger_websocket_disconnect)
         top_buttons_horizontal_layout.addWidget(restart_button)
 
         #Above Tabs

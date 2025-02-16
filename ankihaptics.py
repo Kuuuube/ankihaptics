@@ -75,6 +75,16 @@ class AnkiHaptics:
 
         hooks.register_hooks(aqt.mw, self)
 
+        async def disconnect_websocket() -> None:
+            try:
+                await self.client.stop_all()
+            except buttplug.errors.client.DisconnectedError:
+                logger.error_log("Websocket hit error while trying to stop devices before disconnect.", traceback.format_exc())
+            try:
+                await self.client.disconnect()
+            except buttplug.errors.client.DisconnectedError:
+                logger.error_log("Websocket hit error while trying to disconnect.", traceback.format_exc())
+
         while self.keep_websocket_thread_alive:
             if len(self.websocket_command_queue) > 0:
                 websocket_command = self.websocket_command_queue.pop(0)
@@ -106,8 +116,7 @@ class AnkiHaptics:
                             await asyncio.sleep(config["websocket_polling_delay_ms"] / 1000)
 
                     except Exception:  # If anything throws while sending device commands, emergency stop all devices, disconnect, clear queue, and end thread  # noqa: BLE001
-                        await self.client.stop_all()
-                        await self.client.disconnect()
+                        await disconnect_websocket()
                         self.websocket_command_queue = []
                         logger.error_log("Websocket hit error while issuing device commands. Emergency stopping all devices and clearing queue.", traceback.format_exc())
                         print("Websocket hit error while issuing device commands. Emergency stopping all devices and clearing queue.")  # noqa: T201
@@ -117,15 +126,7 @@ class AnkiHaptics:
 
             await asyncio.sleep(config["websocket_polling_delay_ms"] / 1000)
 
-        try:
-            await self.client.stop_all()
-        except buttplug.errors.client.DisconnectedError:
-            logger.error_log("Websocket hit error while trying to stop devices before disconnect.", traceback.format_exc())
-        try:
-            await self.client.disconnect()
-        except buttplug.errors.client.DisconnectedError:
-            logger.error_log("Websocket hit error while trying to disconnect.", traceback.format_exc())
-
+        await disconnect_websocket()
         self.websocket_status = "DISCONNECTED"
 
     def _setup_settings_window(self, config: dict) -> None:

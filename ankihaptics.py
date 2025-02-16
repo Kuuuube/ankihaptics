@@ -149,6 +149,7 @@ class AnkiHaptics:
 
         def trigger_websocket_reconnect() -> None:
             trigger_await_websocket_kill()
+            time.sleep(0.5) #force 0.5 second delay to ensure websocket disconnect has been processed by intiface
             hooks.remove_hooks() #hooks must be removed before restarting the websocket
             self.keep_websocket_thread_alive = True
             self._start_websocket_thread(config)

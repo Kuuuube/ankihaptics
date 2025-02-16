@@ -112,7 +112,7 @@ class AnkiHaptics:
                         logger.error_log("Websocket hit error while issuing device commands. Emergency stopping all devices and clearing queue.", traceback.format_exc())
                         print("Websocket hit error while issuing device commands. Emergency stopping all devices and clearing queue.")  # noqa: T201
                         print(traceback.format_exc())  # noqa: T201
-                        self.websocket_status = "EMERGENCY STOP"
+                        self.websocket_status = "EMERGENCY_STOP"
                         return
 
             await asyncio.sleep(config["websocket_polling_delay_ms"] / 1000)
@@ -135,7 +135,7 @@ class AnkiHaptics:
 
         def trigger_websocket_disconnect() -> None:
             trigger_await_websocket_kill()
-            self.websocket_status = "USER REQUESTED DISCONNECT"
+            self.websocket_status = "USER_REQUESTED_DISCONNECT"
             settings_window.close()
             self._setup_settings_window(config)
 

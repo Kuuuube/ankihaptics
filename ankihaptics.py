@@ -131,11 +131,11 @@ class AnkiHaptics:
             while self.websocket_thread and self.websocket_thread.is_alive():
                 self._cleanup_thread()
                 #block main thread to give time for other thread to die before spawning another
-                one_second = 1000
-                if config["websocket_polling_delay_ms"] <= one_second:
-                    time.sleep(one_second * 2)
+                one_second_ms = 1000
+                if config["websocket_polling_delay_ms"] <= one_second_ms:
+                    time.sleep(2) # require at least 2 second sleep
                 else:
-                    time.sleep(config["websocket_polling_delay_ms"] / one_second * 2)
+                    time.sleep(config["websocket_polling_delay_ms"] / one_second_ms * 2)
             self.keep_websocket_thread_alive = True
             self._start_websocket_thread(config)
             time.sleep(config["reconnect_delay"]) #block main thread to give time for other thread to connect before resetting the window

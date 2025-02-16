@@ -4,6 +4,7 @@ import time
 import traceback
 
 import aqt
+import buttplug
 from aqt.qt import (
     QAction,
     QCheckBox,
@@ -22,7 +23,6 @@ from aqt.qt import (
     QVBoxLayout,
     QWidget,
 )
-from buttplug import Client, ProtocolSpec, WebsocketConnector
 
 from . import config_util, hooks, logger, util
 
@@ -59,9 +59,9 @@ class AnkiHaptics:
         self.keep_websocket_thread_alive = False
 
     async def _start_websocket(self, config: dict) -> None:
-        self.client = Client("Anki Haptics Client", ProtocolSpec.v3)
+        self.client = buttplug.Client("Anki Haptics Client", buttplug.ProtocolSpec.v3)
         self.websocket_status = "STARTING"
-        connector = WebsocketConnector(config["websocket_path"], logger = self.client.logger)
+        connector = buttplug.WebsocketConnector(config["websocket_path"], logger = self.client.logger)
 
         try:
             await self.client.connect(connector)
@@ -117,8 +117,15 @@ class AnkiHaptics:
 
             await asyncio.sleep(config["websocket_polling_delay_ms"] / 1000)
 
-        await self.client.stop_all()
-        await self.client.disconnect()
+        try:
+            await self.client.stop_all()
+        except buttplug.errors.client.DisconnectedError:
+            logger.error_log("Websocket hit error while trying to stop devices before disconnect.", traceback.format_exc())
+        try:
+            await self.client.disconnect()
+        except buttplug.errors.client.DisconnectedError:
+            logger.error_log("Websocket hit error while trying to disconnect.", traceback.format_exc())
+
         self.websocket_status = "DISCONNECTED"
 
     def _setup_settings_window(self, config: dict) -> None:

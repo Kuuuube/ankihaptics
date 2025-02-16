@@ -189,17 +189,21 @@ class AnkiHaptics:
                 settings_window.show()
             return
 
-        #Top buttons
-        top_buttons_horizontal_layout = QHBoxLayout()
-        vertical_layout.addLayout(top_buttons_horizontal_layout)
+        #Top buttons first row
+        top_buttons_first_horizontal_layout = QHBoxLayout()
+        vertical_layout.addLayout(top_buttons_first_horizontal_layout)
         scan_button = QPushButton(scan_button_text, clicked = trigger_device_scanning)
-        top_buttons_horizontal_layout.addWidget(scan_button)
+        top_buttons_first_horizontal_layout.addWidget(scan_button)
         refresh_button = QPushButton("Refresh", clicked = trigger_refresh)
-        top_buttons_horizontal_layout.addWidget(refresh_button)
-        disconnect_button = QPushButton("Disconnect", clicked = trigger_websocket_disconnect)
-        top_buttons_horizontal_layout.addWidget(disconnect_button)
-        restart_button = QPushButton("Restart", clicked = trigger_restart)
-        top_buttons_horizontal_layout.addWidget(restart_button)
+        top_buttons_first_horizontal_layout.addWidget(refresh_button)
+
+        #Top buttons second row
+        top_buttons_second_horizontal_layout = QHBoxLayout()
+        vertical_layout.addLayout(top_buttons_second_horizontal_layout)
+        disconnect_button = QPushButton("Disconnect from Intiface", clicked = trigger_websocket_disconnect)
+        top_buttons_second_horizontal_layout.addWidget(disconnect_button)
+        restart_button = QPushButton("Restart Anki Haptics", clicked = trigger_restart)
+        top_buttons_second_horizontal_layout.addWidget(restart_button)
 
         #Above Tabs
         devices_horizontal_layout = QHBoxLayout()

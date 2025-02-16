@@ -61,8 +61,24 @@ def _show_question(mw: aqt.main.AnkiQt, ankihaptics_ref, card: anki.cards.Card) 
 def _show_answer(mw: aqt.main.AnkiQt, ankihaptics_ref, card: anki.cards.Card) -> None:  # noqa: ANN001
     _handle_hooks(mw, ankihaptics_ref, "show_answer", card)
 
+reviewer_did_answer_card_lambda_func = None
+reviewer_did_show_question_lambda_func = None
+reviewer_did_show_answer_lambda_func = None
+
 def register_hooks(mw: aqt.main.AnkiQt, ankihaptics_ref) -> None:  # noqa: ANN001
+    global reviewer_did_answer_card_lambda_func, reviewer_did_show_question_lambda_func, reviewer_did_show_answer_lambda_func  # noqa: PLW0603
+    def reviewer_did_answer_card_lambda_func(reviewer: aqt.reviewer.Reviewer, card: anki.cards.Card, ease: int) -> None:
+        return _answer_button_press(mw, ankihaptics_ref, reviewer, card, ease)
+    def reviewer_did_show_question_lambda_func(card: anki.cards.Card) -> None:
+        return _show_question(mw, ankihaptics_ref, card)
+    def reviewer_did_show_answer_lambda_func(card: anki.cards.Card) -> None:
+        return _show_answer(mw, ankihaptics_ref, card)
     # https://github.com/ankitects/anki/blob/main/qt/tools/genhooks_gui.py
-    aqt.gui_hooks.reviewer_did_answer_card.append(lambda reviewer, card, ease: _answer_button_press(mw, ankihaptics_ref, reviewer, card, ease))
-    aqt.gui_hooks.reviewer_did_show_question.append(lambda card: _show_question(mw, ankihaptics_ref, card))
-    aqt.gui_hooks.reviewer_did_show_answer.append(lambda card: _show_answer(mw, ankihaptics_ref, card))
+    aqt.gui_hooks.reviewer_did_answer_card.append(reviewer_did_answer_card_lambda_func)
+    aqt.gui_hooks.reviewer_did_show_question.append(reviewer_did_show_question_lambda_func)
+    aqt.gui_hooks.reviewer_did_show_answer.append(reviewer_did_show_answer_lambda_func)
+
+def remove_hooks() -> None:
+    aqt.gui_hooks.reviewer_did_answer_card.remove(reviewer_did_answer_card_lambda_func)
+    aqt.gui_hooks.reviewer_did_show_question.remove(reviewer_did_show_question_lambda_func)
+    aqt.gui_hooks.reviewer_did_show_answer.remove(reviewer_did_show_answer_lambda_func)

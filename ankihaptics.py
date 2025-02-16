@@ -127,7 +127,7 @@ class AnkiHaptics:
         settings_window = QDialog(aqt.mw)
         vertical_layout = QVBoxLayout()
 
-        def trigger_websocket_reconnect() -> None:
+        def trigger_await_websocket_kill() -> None:
             while self.websocket_thread and self.websocket_thread.is_alive():
                 self._cleanup_thread()
                 #block main thread to give time for other thread to die before spawning another
@@ -136,6 +136,15 @@ class AnkiHaptics:
                     time.sleep(2) # require at least 2 second sleep
                 else:
                     time.sleep(config["websocket_polling_delay_ms"] / one_second_ms * 2)
+
+        def trigger_websocket_disconnect() -> None:
+            trigger_await_websocket_kill()
+            self.websocket_status = "USER REQUESTED DISCONNECT"
+            settings_window.close()
+            self._setup_settings_window(config)
+
+        def trigger_websocket_reconnect() -> None:
+            trigger_await_websocket_kill()
             self.keep_websocket_thread_alive = True
             self._start_websocket_thread(config)
             time.sleep(config["reconnect_delay"]) #block main thread to give time for other thread to connect before resetting the window
@@ -153,6 +162,10 @@ class AnkiHaptics:
             else:
                 scan_button.setText("Scan for Devices")
                 self.websocket_command_queue.append({"command": "stop_scanning"})
+
+        def trigger_restart() -> None:
+            hooks.remove_hooks() #hooks must be removed before restarting the websocket
+            trigger_websocket_reconnect()
 
         if self.websocket_status != "OK" or not self.client:
             vertical_layout.addWidget(QLabel("Failed to connect to websocket. Status code: " + self.websocket_status))
@@ -187,6 +200,10 @@ class AnkiHaptics:
         top_buttons_horizontal_layout.addWidget(scan_button)
         refresh_button = QPushButton("Refresh", clicked = trigger_refresh)
         top_buttons_horizontal_layout.addWidget(refresh_button)
+        restart_button = QPushButton("Restart", clicked = trigger_restart)
+        top_buttons_horizontal_layout.addWidget(restart_button)
+        restart_button = QPushButton("Disconnect", clicked = trigger_websocket_disconnect)
+        top_buttons_horizontal_layout.addWidget(restart_button)
 
         #Above Tabs
         devices_horizontal_layout = QHBoxLayout()

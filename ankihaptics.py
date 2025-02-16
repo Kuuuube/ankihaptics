@@ -148,6 +148,7 @@ class AnkiHaptics:
 
         def trigger_websocket_reconnect() -> None:
             trigger_await_websocket_kill()
+            hooks.remove_hooks() #hooks must be removed before restarting the websocket
             self.keep_websocket_thread_alive = True
             self._start_websocket_thread(config)
             time.sleep(config["reconnect_delay"]) #block main thread to give time for other thread to connect before resetting the window

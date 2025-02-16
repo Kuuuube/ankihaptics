@@ -183,6 +183,8 @@ class AnkiHaptics:
             vertical_layout.addWidget(reconnect_button)
             refresh_button = QPushButton("Refresh", clicked = trigger_refresh)
             vertical_layout.addWidget(refresh_button)
+            disconnect_button = QPushButton("Disconnect from Intiface", clicked = trigger_websocket_disconnect)
+            vertical_layout.addWidget(disconnect_button)
             settings_window.setLayout(vertical_layout)
             settings_window.resize(500, 400)
             if settings_window.exec():
